@@ -1,0 +1,1959 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus Orizzonti Armonici 2026</title>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #f5f3ec;
+      --bg-soft: #ece8da;
+      --surface: #ffffff;
+      --surface-soft: #faf8f1;
+      --ink: #1f2822;
+      --muted: #657069;
+      --line: #d9d4c4;
+      --line-strong: #bdb6a4;
+      --primary: #245c4b;
+      --primary-strong: #173f34;
+      --primary-soft: #dfeee7;
+      --accent: #bc5a39;
+      --accent-soft: #f6dfd4;
+      --blue: #416f8a;
+      --blue-soft: #e1edf3;
+      --amber: #b77a17;
+      --amber-soft: #f5e7c8;
+      --danger: #b84635;
+      --danger-soft: #f7ded9;
+      --ok: #3d7745;
+      --shadow: 0 18px 54px rgba(31, 40, 34, 0.12);
+      --radius: 8px;
+      --radius-sm: 6px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--font);
+      background:
+        linear-gradient(90deg, rgba(36, 92, 75, 0.06) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(36, 92, 75, 0.05) 1px, transparent 1px),
+        linear-gradient(135deg, var(--bg), #fbfaf3 62%, #edf5f0);
+      background-size: 44px 44px, 44px 44px, auto;
+    }
+
+    body.has-landing-photo {
+      background-image:
+        linear-gradient(90deg, rgba(17, 37, 32, 0.78), rgba(17, 37, 32, 0.34)),
+        var(--landing-background-image);
+      background-position: center;
+      background-size: cover;
+      background-attachment: fixed;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    h1, h2, h3, p { margin-top: 0; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 22px;
+      overflow-y: auto;
+      color: #f7fbf7;
+      background:
+        linear-gradient(180deg, rgba(23, 63, 52, 0.98), rgba(28, 45, 40, 0.99)),
+        radial-gradient(circle at 24% 6%, rgba(245, 231, 200, 0.18), transparent 32%);
+    }
+
+    body.has-landing-photo .sidebar {
+      background: linear-gradient(180deg, rgba(17, 37, 32, 0.9), rgba(23, 45, 39, 0.82));
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--primary-strong);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, #f5e7c8, #e2efe8);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.14;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(247, 251, 247, 0.7);
+      font-size: 0.83rem;
+      font-weight: 600;
+    }
+
+    .sidebar-panel {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid rgba(247, 251, 247, 0.16);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .label {
+      display: block;
+      color: inherit;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .auth-tabs, .side-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .auth-tabs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tab-lite, .side-link {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 10px;
+      border: 1px solid rgba(247, 251, 247, 0.16);
+      border-radius: var(--radius-sm);
+      color: rgba(247, 251, 247, 0.78);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .tab-lite.is-active, .side-link.is-active {
+      color: #173f34;
+      border-color: #f5e7c8;
+      background: #f5e7c8;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .auth-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .auth-field label {
+      color: rgba(247, 251, 247, 0.76);
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .auth-input {
+      width: 100%;
+      min-height: 40px;
+      padding: 0 10px;
+      border: 1px solid rgba(247, 251, 247, 0.24);
+      border-radius: var(--radius-sm);
+      color: #f7fbf7;
+      background: rgba(0, 0, 0, 0.18);
+      outline-color: #f5e7c8;
+    }
+
+    .auth-input option {
+      color: var(--ink);
+      background: var(--surface);
+    }
+
+    .session-card strong {
+      display: block;
+      margin-top: 4px;
+      color: #f7fbf7;
+    }
+
+    .session-card span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(247, 251, 247, 0.68);
+      font-size: 0.88rem;
+    }
+
+    .sidebar-note {
+      margin: auto 0 0;
+      color: rgba(247, 251, 247, 0.66);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    body.has-landing-photo .main {
+      display: grid;
+      align-items: center;
+    }
+
+    .view {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    body.has-landing-photo .view {
+      width: 100%;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(110deg, rgba(255, 255, 255, 0.94), rgba(250, 248, 241, 0.92)),
+        repeating-linear-gradient(180deg, transparent 0 13px, rgba(36, 92, 75, 0.08) 13px 14px, transparent 14px 20px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 22px;
+      bottom: 18px;
+      width: 170px;
+      height: 84px;
+      opacity: 0.14;
+      background:
+        radial-gradient(circle at 14px 68px, var(--accent) 0 8px, transparent 9px),
+        radial-gradient(circle at 80px 34px, var(--primary) 0 8px, transparent 9px),
+        linear-gradient(105deg, transparent 0 38px, var(--primary) 39px 42px, transparent 43px),
+        linear-gradient(112deg, transparent 0 102px, var(--accent) 103px 106px, transparent 107px);
+      pointer-events: none;
+    }
+
+    .hero.landing {
+      min-height: min(620px, calc(100vh - 48px));
+      grid-template-columns: minmax(0, 1fr);
+      align-items: end;
+      padding: clamp(28px, 6vw, 72px);
+      background:
+        linear-gradient(110deg, rgba(255, 255, 255, 0.94), rgba(250, 248, 241, 0.9)),
+        repeating-linear-gradient(180deg, transparent 0 13px, rgba(36, 92, 75, 0.08) 13px 14px, transparent 14px 20px);
+    }
+
+    .hero.landing::after {
+      display: none;
+    }
+
+    .hero.landing.has-photo {
+      color: #f7fbf7;
+      border-color: rgba(255, 255, 255, 0.18);
+      background: linear-gradient(90deg, rgba(23, 63, 52, 0.78), rgba(23, 63, 52, 0.46));
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+    }
+
+    .hero.landing.has-photo .eyebrow,
+    .hero.landing.has-photo p {
+      color: rgba(247, 251, 247, 0.84);
+    }
+
+    .hero.landing h2 {
+      max-width: 760px;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+    }
+
+    .landing-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-size: 0.76rem;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.1vw, 2.2rem);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .hero-actions, .actions, .tabs, .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .hero-actions {
+      position: relative;
+      z-index: 1;
+      justify-content: flex-end;
+    }
+
+    .grid { display: grid; gap: 14px; }
+    .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .two-col { grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.35fr); align-items: start; }
+    .user-col { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; }
+    .room-col { grid-template-columns: 310px minmax(0, 1fr); align-items: start; }
+
+    .panel, .metric, .meal-card, .room-card, .ticket, .booking-row {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 30px rgba(31, 40, 34, 0.08);
+    }
+
+    .panel { padding: 18px; }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel h3, .panel-title {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .muted, .panel-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .metric {
+      min-height: 110px;
+      padding: 16px;
+      display: grid;
+      align-content: space-between;
+      gap: 12px;
+    }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: clamp(1.28rem, 2.2vw, 1.85rem);
+      letter-spacing: 0;
+    }
+
+    .metric small {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    .field label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .field input, .field select, .field textarea {
+      width: 100%;
+      min-height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      color: var(--ink);
+      background: var(--surface);
+      outline-color: var(--primary);
+    }
+
+    .field textarea {
+      min-height: 82px;
+      padding: 10px 12px;
+      resize: vertical;
+    }
+
+    .btn {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      color: var(--ink);
+      background: var(--surface);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .btn:hover { border-color: var(--primary); background: var(--surface-soft); }
+    .btn:disabled { cursor: not-allowed; opacity: 0.5; }
+    .btn-primary { border-color: var(--primary); color: #f7fbf7; background: var(--primary); }
+    .btn-primary:hover { background: var(--primary-strong); }
+    .btn-danger { border-color: rgba(184, 70, 53, 0.28); color: var(--danger); background: #fff8f6; }
+    .btn-small { min-height: 34px; padding: 0 10px; font-size: 0.88rem; }
+    .btn-ghost { border-color: transparent; background: transparent; }
+    .icon-btn { width: 38px; min-width: 38px; padding: 0; }
+
+    .pill, .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      padding: 0 9px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--bg-soft);
+      font-size: 0.78rem;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .ok { color: #24572b; background: #dff0df; }
+    .warn { color: #83560c; background: var(--amber-soft); }
+    .accent { color: #93402e; background: var(--accent-soft); }
+    .blue { color: #285c74; background: var(--blue-soft); }
+    .danger { color: var(--danger); background: var(--danger-soft); }
+
+    .list { display: grid; gap: 10px; }
+
+    .day-item, .dish-item, .booking-row, .line-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+    }
+
+    .dish-item { grid-template-columns: minmax(0, 1fr) auto auto; }
+    .booking-row { grid-template-columns: minmax(120px, 1.2fr) minmax(92px, 0.7fr) minmax(104px, 0.7fr) auto; }
+
+    .item-title { margin: 0; font-weight: 850; }
+    .item-meta {
+      margin-top: 4px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .empty {
+      padding: 22px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-align: center;
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .tab {
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--surface);
+      font-weight: 850;
+    }
+
+    .tab.is-active {
+      color: #f7fbf7;
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .meal-grid, .room-grid, .ticket-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .meal-card, .room-card, .ticket {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .meal-top, .ticket-head, .room-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .meal-card h3, .ticket h3, .room-card h3 {
+      margin: 8px 0 0;
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .price {
+      font-weight: 900;
+      color: var(--primary-strong);
+      white-space: nowrap;
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: 38px minmax(42px, 1fr) 38px;
+      gap: 6px;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .stepper output {
+      min-height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+      font-weight: 900;
+    }
+
+    .summary-panel { position: sticky; top: 24px; display: grid; gap: 14px; }
+    .summary-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .summary-line {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .summary-line:last-child { padding-bottom: 0; border-bottom: 0; }
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line-strong);
+      font-size: 1.18rem;
+      font-weight: 900;
+    }
+
+    .progress {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--bg-soft);
+    }
+    .progress > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--primary), var(--amber)); }
+
+    .serve-list { display: grid; gap: 8px; }
+    .serve-btn {
+      width: 100%;
+      min-height: 44px;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--ink);
+      background: var(--surface-soft);
+      text-align: left;
+      font-weight: 800;
+    }
+    .serve-btn.is-served { border-color: rgba(61, 119, 69, 0.35); background: #edf7ed; color: #24572b; }
+    .check-dot {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      color: var(--muted);
+    }
+    .serve-btn.is-served .check-dot { color: #24572b; background: #dff0df; }
+
+    .cash-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-soft);
+    }
+
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+      gap: 8px;
+    }
+
+    .slot {
+      min-height: 54px;
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      padding: 8px 6px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: #315b36;
+      background: var(--primary-soft);
+      font-weight: 850;
+      text-align: center;
+    }
+    .slot small { display: block; color: inherit; opacity: 0.76; font-size: 0.72rem; font-weight: 750; }
+    .slot.is-selected { color: #f7fbf7; background: var(--primary); transform: translateY(-1px); }
+    .slot.is-taken { color: var(--muted); background: var(--bg-soft); cursor: not-allowed; }
+    .slot.is-mine { color: #285c74; background: var(--blue-soft); }
+    .slot.is-conflict { color: #83560c; background: var(--amber-soft); cursor: not-allowed; }
+    .slot.is-disabled { opacity: 0.42; cursor: not-allowed; }
+
+    .room-card.is-selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .equipment {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .divider {
+      height: 1px;
+      margin: 16px 0;
+      border: 0;
+      background: var(--line);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 30;
+      min-width: min(420px, calc(100vw - 32px));
+      transform: translateX(-50%) translateY(120%);
+      padding: 13px 16px;
+      border-radius: var(--radius);
+      color: #f7fbf7;
+      background: var(--primary-strong);
+      box-shadow: var(--shadow);
+      transition: transform 180ms ease;
+      font-weight: 800;
+    }
+    .toast.is-visible { transform: translateX(-50%) translateY(0); }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1080px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar { position: relative; height: auto; }
+      .side-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .two-col, .user-col, .room-col { grid-template-columns: 1fr; }
+      .summary-panel { position: static; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .main { padding: 14px; }
+      .hero, .panel { padding: 16px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-actions { justify-content: flex-start; }
+      .metrics, .meal-grid, .room-grid, .ticket-grid, .field-grid, .side-nav { grid-template-columns: 1fr; }
+      .day-item, .dish-item, .booking-row, .line-item { grid-template-columns: 1fr; }
+      .actions { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navigazione principale">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><i data-lucide="music-2"></i></div>
+        <div>
+          <h1>Campus Orizzonti Armonici 2026</h1>
+          <span>servizi campus</span>
+        </div>
+      </div>
+
+      <div class="sidebar-panel" id="authPanel"></div>
+      <nav class="side-nav" id="moduleNav" aria-label="Moduli"></nav>
+      <p class="sidebar-note" id="storageNote">Un unico accesso per mensa e aule.</p>
+    </aside>
+
+    <main class="main">
+      <div class="view" id="view"></div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-config.js"></script>
+  <script>
+    const STORAGE_KEY = "campusUnifiedState.v1";
+    const SESSION_KEY = "campusUnifiedSession.v1";
+    const APP_STATE_ID = "campus-orizzonti-armonici-2026";
+    const PASSWORDS = { admin: "admin2026", operator: "mensa2026" };
+    const categories = ["Primo", "Secondo", "Contorno", "Dolce", "Bevanda"];
+    const supabaseSettings = window.CAMPUS_SUPABASE || {};
+    const hasSupabaseConfig = Boolean(
+      supabaseSettings.url &&
+      supabaseSettings.anonKey &&
+      !String(supabaseSettings.url).includes("INSERISCI") &&
+      !String(supabaseSettings.anonKey).includes("INSERISCI")
+    );
+    const supabaseClient = window.supabase && hasSupabaseConfig
+      ? window.supabase.createClient(supabaseSettings.url, supabaseSettings.anonKey)
+      : null;
+
+    let remoteStateReady = false;
+    let remoteStateFailed = false;
+    let remoteSaveTimer = null;
+    let remoteSubscription = null;
+    let applyingRemoteState = false;
+
+    const ui = {
+      loginRole: "student",
+      module: "canteen",
+      canteenDate: "",
+      operatorFilter: "open",
+      roomDate: dateOffset(1),
+      selectedRoomId: "",
+      selectedSlotStart: "",
+      roomAdminEditId: ""
+    };
+
+    let state = loadState();
+    let currentUser = loadSession();
+    const drafts = {};
+
+    const authPanel = document.getElementById("authPanel");
+    const moduleNav = document.getElementById("moduleNav");
+    const view = document.getElementById("view");
+    const toast = document.getElementById("toast");
+    const storageNote = document.getElementById("storageNote");
+
+    function pad(value) { return String(value).padStart(2, "0"); }
+    function dateOffset(days) {
+      const date = new Date();
+      date.setHours(12, 0, 0, 0);
+      date.setDate(date.getDate() + days);
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    }
+    function isoToDate(isoDate) {
+      const [year, month, day] = isoDate.split("-").map(Number);
+      return new Date(year, month - 1, day, 12, 0, 0, 0);
+    }
+    function addDaysIso(isoDate, days) {
+      const date = isoToDate(isoDate);
+      date.setDate(date.getDate() + days);
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    }
+    function daysBetween(startDate, endDate) {
+      const days = [];
+      if (!startDate || !endDate || startDate > endDate) return days;
+      let cursor = startDate;
+      while (cursor <= endDate) {
+        days.push(cursor);
+        cursor = addDaysIso(cursor, 1);
+      }
+      return days;
+    }
+    function formatDate(isoDate) {
+      if (!isoDate) return "";
+      const date = isoToDate(isoDate);
+      return new Intl.DateTimeFormat("it-IT", { weekday: "short", day: "2-digit", month: "short" }).format(date);
+    }
+    function money(value) {
+      return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(value || 0);
+    }
+    function createId(prefix) {
+      return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+    }
+    function timeToMinutes(time) {
+      const [hours, minutes] = String(time).split(":").map(Number);
+      return hours * 60 + minutes;
+    }
+    function minutesToTime(minutes) {
+      return `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`;
+    }
+    function intervalsOverlap(aStart, aEnd, bStart, bEnd) {
+      return timeToMinutes(aStart) < timeToMinutes(bEnd) && timeToMinutes(bStart) < timeToMinutes(aEnd);
+    }
+    function generateSlots(openFrom, openTo, duration) {
+      const slots = [];
+      let cursor = timeToMinutes(openFrom);
+      const end = timeToMinutes(openTo);
+      while (cursor + duration <= end) {
+        slots.push({ start: minutesToTime(cursor), end: minutesToTime(cursor + duration) });
+        cursor += duration;
+      }
+      return slots;
+    }
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+    function slugify(value) {
+      return String(value).trim().toLowerCase().normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "utente";
+    }
+
+    function loadState() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try { return normalizeState(JSON.parse(stored)); } catch (error) { console.warn(error); }
+      }
+      return normalizeState(demoState());
+    }
+    function saveState() {
+      let localSaved = true;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        console.warn(error);
+        showToast("Immagine troppo grande per il salvataggio locale");
+        localSaved = false;
+      }
+      if (supabaseClient && remoteStateReady && !applyingRemoteState) queueRemoteSave();
+      return localSaved || Boolean(supabaseClient && remoteStateReady);
+    }
+    function loadSession() {
+      const stored = localStorage.getItem(SESSION_KEY);
+      if (!stored) return null;
+      try {
+        const session = JSON.parse(stored);
+        if (session && session.id && session.role) return session;
+      } catch (error) { console.warn(error); }
+      return null;
+    }
+    function saveSession() {
+      if (currentUser) localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+      else localStorage.removeItem(SESSION_KEY);
+    }
+    function saveLocalStateQuietly() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (error) { console.warn(error); }
+    }
+    function updateStorageNote() {
+      if (!storageNote) return;
+      if (!supabaseClient) {
+        storageNote.textContent = "Un unico accesso per mensa e aule. Configura Supabase per condividere i dati online.";
+        return;
+      }
+      if (remoteStateFailed) {
+        storageNote.textContent = "Un unico accesso per mensa e aule. Supabase non raggiungibile: dati locali.";
+        return;
+      }
+      storageNote.textContent = remoteStateReady
+        ? "Un unico accesso per mensa e aule. Dati condivisi su Supabase."
+        : "Connessione a Supabase in corso...";
+    }
+    function queueRemoteSave() {
+      window.clearTimeout(remoteSaveTimer);
+      remoteSaveTimer = window.setTimeout(saveRemoteState, 350);
+    }
+    async function saveRemoteState() {
+      if (!supabaseClient || !remoteStateReady || applyingRemoteState) return;
+      const payload = JSON.parse(JSON.stringify(state));
+      const { error } = await supabaseClient
+        .from("app_state")
+        .upsert({ id: APP_STATE_ID, data: payload, updated_at: new Date().toISOString() });
+      if (error) {
+        console.warn(error);
+        showToast("Errore salvataggio Supabase");
+      }
+    }
+    async function initializeRemoteState() {
+      if (!supabaseClient) {
+        updateStorageNote();
+        return;
+      }
+      try {
+        const { data, error } = await supabaseClient
+          .from("app_state")
+          .select("data")
+          .eq("id", APP_STATE_ID)
+          .maybeSingle();
+        if (error) throw error;
+
+        if (data?.data) {
+          state = normalizeState(data.data);
+          saveLocalStateQuietly();
+        } else {
+          const { error: insertError } = await supabaseClient
+            .from("app_state")
+            .upsert({ id: APP_STATE_ID, data: state, updated_at: new Date().toISOString() });
+          if (insertError) throw insertError;
+        }
+
+        remoteStateReady = true;
+        remoteStateFailed = false;
+        subscribeRemoteState();
+        render();
+      } catch (error) {
+        console.warn(error);
+        remoteStateFailed = true;
+        showToast("Supabase non raggiungibile: uso dati locali");
+        render();
+      }
+    }
+    function subscribeRemoteState() {
+      if (!supabaseClient || remoteSubscription) return;
+      remoteSubscription = supabaseClient
+        .channel("campus-unified-state")
+        .on("postgres_changes", { event: "*", schema: "public", table: "app_state", filter: `id=eq.${APP_STATE_ID}` }, (payload) => {
+          if (!payload.new?.data) return;
+          applyingRemoteState = true;
+          state = normalizeState(payload.new.data);
+          saveLocalStateQuietly();
+          draftsClear();
+          applyingRemoteState = false;
+          render();
+        })
+        .subscribe();
+    }
+    function normalizeState(value) {
+      const next = value && typeof value === "object" ? value : demoState();
+      next.landing = next.landing && typeof next.landing === "object" ? next.landing : { backgroundImage: "" };
+      next.landing.backgroundImage = typeof next.landing.backgroundImage === "string" ? next.landing.backgroundImage : "";
+      next.canteen = next.canteen || {};
+      next.canteen.serviceDays = Array.isArray(next.canteen.serviceDays) ? next.canteen.serviceDays : [];
+      next.canteen.menu = next.canteen.menu && typeof next.canteen.menu === "object" ? next.canteen.menu : {};
+      next.canteen.bookings = Array.isArray(next.canteen.bookings) ? next.canteen.bookings : [];
+      if (!next.canteen.servicePeriod?.startDate || !next.canteen.servicePeriod?.endDate) {
+        next.canteen.servicePeriod = periodFromDays(next.canteen.serviceDays);
+      }
+      next.rooms = Array.isArray(next.rooms) ? next.rooms : [];
+      next.roomBookings = Array.isArray(next.roomBookings) ? next.roomBookings : [];
+      next.roomSettings = next.roomSettings || { dailyLimitHours: 4, slotDuration: 60 };
+      next.canteen.serviceDays.forEach((day) => { next.canteen.menu[day.date] = next.canteen.menu[day.date] || []; });
+      return next;
+    }
+    function periodFromDays(days) {
+      const dates = (days || []).map((day) => day.date).filter(Boolean).sort();
+      return { startDate: dates[0] || dateOffset(1), endDate: dates[dates.length - 1] || dateOffset(1) };
+    }
+
+    function demoState() {
+      const tomorrow = dateOffset(1);
+      const dayAfter = dateOffset(2);
+      const dishesTomorrow = [
+        { id: "dish_1", name: "Trofie al pesto leggero", category: "Primo", price: 6.5, active: true },
+        { id: "dish_2", name: "Pollo al limone con erbe", category: "Secondo", price: 8, active: true },
+        { id: "dish_3", name: "Verdure grigliate", category: "Contorno", price: 3.5, active: true },
+        { id: "dish_4", name: "Crostata albicocca", category: "Dolce", price: 3, active: true },
+        { id: "dish_5", name: "Acqua naturale", category: "Bevanda", price: 1.2, active: true }
+      ];
+      const dishesDayAfter = [
+        { id: "dish_6", name: "Riso venere con zucchine", category: "Primo", price: 6.8, active: true },
+        { id: "dish_7", name: "Frittata al forno", category: "Secondo", price: 7.2, active: true },
+        { id: "dish_8", name: "Insalata mista", category: "Contorno", price: 3, active: true }
+      ];
+      return {
+        landing: {
+          backgroundImage: ""
+        },
+        canteen: {
+          servicePeriod: { startDate: tomorrow, endDate: dayAfter },
+          serviceDays: [
+            { date: tomorrow, status: "open", deadline: `${dateOffset(0)} 21:00` },
+            { date: dayAfter, status: "open", deadline: `${tomorrow} 21:00` }
+          ],
+          menu: { [tomorrow]: dishesTomorrow, [dayAfter]: dishesDayAfter },
+          bookings: [
+            {
+              id: "meal_demo_1",
+              serviceDate: tomorrow,
+              userId: "guest:giulia-rossi:student",
+              userName: "Giulia Rossi",
+              userRole: "Studente",
+              paid: false,
+              createdAt: new Date().toISOString(),
+              items: [mealLine(dishesTomorrow[0], 1), mealLine(dishesTomorrow[1], 1), mealLine(dishesTomorrow[4], 1)]
+            },
+            {
+              id: "meal_demo_2",
+              serviceDate: tomorrow,
+              userId: "guest:andrea-conti:teacher",
+              userName: "Andrea Conti",
+              userRole: "Docente",
+              paid: true,
+              createdAt: new Date().toISOString(),
+              items: [{ ...mealLine(dishesTomorrow[0], 1), served: true }, mealLine(dishesTomorrow[2], 1)]
+            }
+          ]
+        },
+        rooms: [
+          { id: "room_1", name: "Aula Piano A", location: "Edificio principale, piano 1", equipment: ["Pianoforte a coda", "Sgabello regolabile", "Specchio"], icon: "piano", color: "green", openFrom: "09:00", openTo: "18:00" },
+          { id: "room_2", name: "Sala Canto B", location: "Edificio principale, piano 1", equipment: ["Insonorizzata", "Pianoforte verticale", "Leggio"], icon: "mic-2", color: "red", openFrom: "09:00", openTo: "18:00" },
+          { id: "room_3", name: "Sala Ensemble C", location: "Padiglione musica, piano terra", equipment: ["Capienza 6 persone", "Sedie", "Leggii multipli"], icon: "guitar", color: "blue", openFrom: "08:00", openTo: "20:00" }
+        ],
+        roomSettings: { dailyLimitHours: 4, slotDuration: 60 },
+        roomBookings: [
+          { id: "room_booking_1", roomId: "room_1", userId: "guest:giulia-rossi:student", userName: "Giulia Rossi", userRole: "Studente", date: tomorrow, start: "10:00", end: "11:00", createdAt: new Date().toISOString() },
+          { id: "room_booking_2", roomId: "room_2", userId: "guest:marco-neri:student", userName: "Marco Neri", userRole: "Studente", date: tomorrow, start: "11:00", end: "12:00", createdAt: new Date().toISOString() }
+        ]
+      };
+    }
+    function mealLine(dish, qty) {
+      return { lineId: createId("line"), dishId: dish.id, name: dish.name, category: dish.category, price: Number(dish.price), qty, served: false };
+    }
+
+    function roleLabel(role) {
+      return ({ student: "Studente", teacher: "Docente", admin: "Admin", operator: "Operatore" })[role] || role;
+    }
+    function roleModules(user) {
+      if (!user) return [];
+      if (user.role === "admin" || user.role === "student") return ["canteen", "rooms"];
+      return ["canteen"];
+    }
+    function canAccessModule(module) { return roleModules(currentUser).includes(module); }
+    function ensureModule() {
+      if (!currentUser) return;
+      const allowed = roleModules(currentUser);
+      if (!allowed.includes(ui.module)) ui.module = allowed[0] || "canteen";
+    }
+
+    function updateLandingBackdrop() {
+      const background = state.landing?.backgroundImage || "";
+      const isActive = !currentUser && Boolean(background);
+      document.body.classList.toggle("has-landing-photo", isActive);
+      if (isActive) document.body.style.setProperty("--landing-background-image", `url("${background}")`);
+      else document.body.style.removeProperty("--landing-background-image");
+    }
+
+    function render() {
+      ensureModule();
+      updateStorageNote();
+      updateLandingBackdrop();
+      renderAuth();
+      renderModuleNav();
+      if (!currentUser) renderWelcome();
+      else if (ui.module === "canteen") renderCanteen();
+      else renderRooms();
+      refreshIcons();
+    }
+
+    function renderAuth() {
+      if (currentUser) {
+        authPanel.innerHTML = `
+          <div class="session-card">
+            <p class="label">Accesso attivo</p>
+            <strong>${escapeHtml(currentUser.name)}</strong>
+            <span>${roleLabel(currentUser.role)}</span>
+            <button class="btn" type="button" data-action="logout"><i data-lucide="log-out"></i> Esci</button>
+          </div>
+        `;
+        return;
+      }
+      authPanel.innerHTML = `
+        <div class="auth-tabs" role="group" aria-label="Tipo accesso">
+          ${loginTab("student", "Studente")}
+          ${loginTab("teacher", "Docente")}
+          ${loginTab("admin", "Admin")}
+          ${loginTab("operator", "Operatore")}
+        </div>
+        <form class="auth-form" id="loginForm">
+          ${ui.loginRole === "admin" || ui.loginRole === "operator" ? staffFields() : guestFields()}
+          <button class="btn btn-primary" type="submit"><i data-lucide="log-in"></i> Entra</button>
+        </form>
+      `;
+    }
+    function loginTab(role, label) {
+      return `<button class="tab-lite ${ui.loginRole === role ? "is-active" : ""}" type="button" data-action="login-role" data-role="${role}">${label}</button>`;
+    }
+    function guestFields() {
+      return `
+        <div class="auth-field">
+          <label for="firstName">Nome</label>
+          <input class="auth-input" id="firstName" name="firstName" type="text" autocomplete="given-name" required>
+        </div>
+        <div class="auth-field">
+          <label for="lastName">Cognome</label>
+          <input class="auth-input" id="lastName" name="lastName" type="text" autocomplete="family-name" required>
+        </div>
+      `;
+    }
+    function staffFields() {
+      return `
+        <div class="auth-field">
+          <label for="staffPassword">Password ${roleLabel(ui.loginRole)}</label>
+          <input class="auth-input" id="staffPassword" name="password" type="password" autocomplete="current-password" required>
+        </div>
+      `;
+    }
+
+    function renderModuleNav() {
+      if (!currentUser) {
+        moduleNav.innerHTML = `<div class="side-link is-active"><i data-lucide="log-in"></i><span>Accesso</span></div>`;
+        return;
+      }
+      moduleNav.innerHTML = roleModules(currentUser).map((module) => {
+        const label = module === "canteen" ? "Mensa" : "Aule";
+        const icon = module === "canteen" ? "utensils" : "door-open";
+        return `<button class="side-link ${ui.module === module ? "is-active" : ""}" type="button" data-action="module" data-module="${module}"><i data-lucide="${icon}"></i><span>${label}</span></button>`;
+      }).join("");
+    }
+
+    function renderWelcome() {
+      const background = state.landing?.backgroundImage || "";
+      view.innerHTML = `
+        <section class="hero landing ${background ? "has-photo" : ""}">
+          <div>
+            <p class="eyebrow">Campus Orizzonti Armonici 2026</p>
+            <h2>il tuo portale unico per il campus</h2>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderLandingAdminPanel() {
+      const background = state.landing?.backgroundImage || "";
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div><h3>Sfondo pagina di accesso</h3><p>Opzione riservata all'admin: la foto viene mostrata nella landing prima del login.</p></div>
+          </div>
+          <div class="landing-tools">
+            <label class="btn btn-primary" for="landingBackgroundInput"><i data-lucide="image-plus"></i> Carica foto sfondo</label>
+            <input class="sr-only" id="landingBackgroundInput" type="file" accept="image/*" data-action="landing-background">
+            ${background ? `<button class="btn" type="button" data-action="clear-landing-background"><i data-lucide="image-off"></i> Rimuovi foto</button>` : ""}
+            <span class="pill ${background ? "ok" : ""}">${background ? "Foto attiva" : "Nessuna foto caricata"}</span>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderCanteen() {
+      if (currentUser.role === "admin") return renderCanteenAdmin();
+      if (currentUser.role === "operator") return renderCanteenOperator();
+      return renderCanteenUser();
+    }
+
+    function sortedMealDays() { return [...state.canteen.serviceDays].sort((a, b) => a.date.localeCompare(b.date)); }
+    function getMenu(date) { return (state.canteen.menu[date] || []).filter((dish) => dish.active !== false); }
+    function firstMealDay() { return sortedMealDays()[0]?.date || dateOffset(1); }
+    function firstOpenMealDay() { return sortedMealDays().find((day) => day.status === "open")?.date || firstMealDay(); }
+    function mealBookingTotal(booking) { return booking.items.reduce((sum, item) => sum + Number(item.price) * Number(item.qty || 1), 0); }
+    function mealProgress(booking) {
+      const total = booking.items.reduce((sum, item) => sum + Number(item.qty || 1), 0);
+      const served = booking.items.reduce((sum, item) => sum + (item.served ? Number(item.qty || 1) : 0), 0);
+      return { total, served, percent: total ? Math.round((served / total) * 100) : 0, complete: total > 0 && served === total };
+    }
+    function mealDayStats(date) {
+      const bookings = state.canteen.bookings.filter((booking) => booking.serviceDate === date);
+      const revenue = bookings.reduce((sum, booking) => sum + mealBookingTotal(booking), 0);
+      const paid = bookings.filter((booking) => booking.paid).reduce((sum, booking) => sum + mealBookingTotal(booking), 0);
+      const items = bookings.flatMap((booking) => booking.items);
+      const totalItems = items.reduce((sum, item) => sum + Number(item.qty || 1), 0);
+      const servedItems = items.reduce((sum, item) => sum + (item.served ? Number(item.qty || 1) : 0), 0);
+      const completedPeople = bookings.filter((booking) => booking.paid && mealProgress(booking).complete).length;
+      return { bookings, revenue, paid, toCollect: revenue - paid, totalItems, servedItems, pendingItems: totalItems - servedItems, completedPeople };
+    }
+    function mealAllStats() {
+      const p = state.canteen.servicePeriod;
+      const bookings = state.canteen.bookings.filter((booking) => booking.serviceDate >= p.startDate && booking.serviceDate <= p.endDate);
+      const revenue = bookings.reduce((sum, booking) => sum + mealBookingTotal(booking), 0);
+      const paid = bookings.filter((booking) => booking.paid).reduce((sum, booking) => sum + mealBookingTotal(booking), 0);
+      const completedPeople = bookings.filter((booking) => booking.paid && mealProgress(booking).complete).length;
+      return { revenue, paid, people: bookings.length, completedPeople };
+    }
+    function servicePeriodLabel() {
+      const period = state.canteen.servicePeriod || periodFromDays(state.canteen.serviceDays);
+      return `${formatDate(period.startDate)} - ${formatDate(period.endDate)}`;
+    }
+
+    function renderCanteenAdmin() {
+      if (!ui.canteenDate || !state.canteen.serviceDays.some((day) => day.date === ui.canteenDate)) ui.canteenDate = firstMealDay();
+      const selectedDate = ui.canteenDate;
+      const period = state.canteen.servicePeriod;
+      const days = sortedMealDays();
+      const menu = getMenu(selectedDate);
+      const stats = mealDayStats(selectedDate);
+      const totals = mealAllStats();
+
+      view.innerHTML = `
+        <section class="hero">
+          <div>
+            <p class="eyebrow">Admin mensa</p>
+            <h2>Menu, prenotazioni e budget pranzo</h2>
+            <p>Periodo servizio: ${servicePeriodLabel()}. Da qui apri i giorni, carichi i piatti e controlli incassi e persone servite.</p>
+          </div>
+          <div class="hero-actions"><button class="btn" type="button" data-action="reset-demo"><i data-lucide="rotate-ccw"></i> Ripristina demo</button></div>
+        </section>
+        <section class="grid metrics">
+          ${metricCard("Budget periodo", money(totals.revenue), `${money(totals.paid)} incassati`, "euro")}
+          ${metricCard("Prenotazioni", totals.people, `${state.canteen.serviceDays.length} giorni attivi`, "calendar-check")}
+          ${metricCard("Persone servite", totals.completedPeople, "pagate e completate", "circle-check")}
+          ${metricCard("Da incassare", money(Math.max(totals.revenue - totals.paid, 0)), "sul periodo", "receipt")}
+        </section>
+        ${renderLandingAdminPanel()}
+        <section class="grid two-col">
+          <div class="panel">
+            <div class="panel-head"><div><h3>Periodo servizio mensa</h3><p>Imposta inizio e fine: i giorni vengono creati automaticamente.</p></div></div>
+            <form class="field-grid" id="mealPeriodForm">
+              <div class="field"><label for="mealPeriodStart">Dal</label><input id="mealPeriodStart" name="startDate" type="date" value="${period.startDate}" required></div>
+              <div class="field"><label for="mealPeriodEnd">Al</label><input id="mealPeriodEnd" name="endDate" type="date" value="${period.endDate}" required></div>
+              <div class="field full"><button class="btn btn-primary" type="submit"><i data-lucide="calendar-range"></i> Salva periodo</button></div>
+            </form>
+            <hr class="divider">
+            <div class="panel-head"><div><h3>Giorni di servizio</h3><p>Ogni giorno ha un proprio menu e le sue prenotazioni.</p></div></div>
+            <form class="field-grid" id="mealDayForm">
+              <div class="field"><label for="mealDate">Data pranzo</label><input id="mealDate" name="date" type="date" value="${dateOffset(1)}" required></div>
+              <div class="field"><label for="mealDeadline">Scadenza</label><input id="mealDeadline" name="deadline" type="text" value="${dateOffset(0)} 21:00" required></div>
+              <div class="field full"><button class="btn btn-primary" type="submit"><i data-lucide="plus"></i> Aggiungi giorno</button></div>
+            </form>
+            <div class="list" style="margin-top: 14px;">${days.length ? days.map(renderMealDayItem).join("") : emptyState("Nessun giorno configurato")}</div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>Menu ${formatDate(selectedDate)}</h3><p>${menu.length} piatti disponibili</p></div>
+              <select data-action="select-meal-admin-date" aria-label="Seleziona giorno mensa">${days.map((day) => `<option value="${day.date}" ${day.date === selectedDate ? "selected" : ""}>${formatDate(day.date)}</option>`).join("")}</select>
+            </div>
+            <form class="field-grid" id="dishForm">
+              <input type="hidden" name="date" value="${selectedDate}">
+              <div class="field full"><label for="dishName">Piatto</label><input id="dishName" name="name" type="text" placeholder="Es. Lasagne vegetariane" required></div>
+              <div class="field"><label for="dishCategory">Categoria</label><select id="dishCategory" name="category">${categories.map((cat) => `<option>${cat}</option>`).join("")}</select></div>
+              <div class="field"><label for="dishPrice">Prezzo</label><input id="dishPrice" name="price" type="number" min="0" step="0.10" value="6.50" required></div>
+              <div class="field full"><button class="btn btn-primary" type="submit"><i data-lucide="utensils"></i> Aggiungi piatto</button></div>
+            </form>
+            <div class="list" style="margin-top: 14px;">${menu.length ? menu.map((dish) => renderDishItem(dish, selectedDate)).join("") : emptyState("Menu ancora vuoto")}</div>
+          </div>
+        </section>
+        <section class="grid two-col">
+          <div class="panel">
+            <div class="panel-head"><div><h3>Dashboard ${formatDate(selectedDate)}</h3><p>${stats.bookings.length} prenotazioni registrate</p></div></div>
+            <div class="grid metrics" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+              ${metricCard("Prenotato", money(stats.revenue), `${money(stats.toCollect)} da incassare`, "banknote")}
+              ${metricCard("Piatti", stats.totalItems, `${stats.pendingItems} ancora da dare`, "chef-hat")}
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>Prenotazioni ${formatDate(selectedDate)}</h3><p>Stato cassa e avanzamento servizio.</p></div></div>
+            <div class="list">${stats.bookings.length ? stats.bookings.map(renderMealBookingRow).join("") : emptyState("Nessuna prenotazione per questo giorno")}</div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderMealDayItem(day) {
+      const stats = mealDayStats(day.date);
+      return `
+        <div class="day-item">
+          <div>
+            <p class="item-title">${formatDate(day.date)}</p>
+            <div class="item-meta">${statusBadge(day.status === "open" ? "Aperto" : "Chiuso", day.status === "open" ? "ok" : "accent")}<span>${stats.bookings.length} prenotazioni</span><span>${escapeHtml(day.deadline)}</span></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-small" type="button" data-action="use-meal-admin-date" data-date="${day.date}"><i data-lucide="eye"></i> Apri</button>
+            <button class="btn btn-small" type="button" data-action="toggle-meal-day" data-date="${day.date}"><i data-lucide="${day.status === "open" ? "lock" : "unlock"}"></i> ${day.status === "open" ? "Chiudi" : "Riapri"}</button>
+          </div>
+        </div>
+      `;
+    }
+    function renderDishItem(dish, date) {
+      return `
+        <div class="dish-item">
+          <div><p class="item-title">${escapeHtml(dish.name)}</p><div class="item-meta">${statusBadge(dish.category, categoryClass(dish.category))}<span>${money(Number(dish.price))}</span></div></div>
+          <strong class="price">${money(Number(dish.price))}</strong>
+          <button class="btn btn-small btn-danger" type="button" data-action="delete-dish" data-date="${date}" data-dish-id="${dish.id}" aria-label="Rimuovi ${escapeHtml(dish.name)}"><i data-lucide="trash-2"></i></button>
+        </div>
+      `;
+    }
+    function renderMealBookingRow(booking) {
+      const progress = mealProgress(booking);
+      const closed = progress.complete && booking.paid;
+      return `
+        <div class="booking-row">
+          <div><p class="item-title">${escapeHtml(booking.userName)}</p><div class="item-meta">${statusBadge(booking.userRole, "blue")}<span>${booking.items.length} righe</span></div></div>
+          <div><strong>${money(mealBookingTotal(booking))}</strong><div class="item-meta">${booking.paid ? "Incassato" : "Da incassare"}</div></div>
+          <div><div class="progress"><span style="width: ${progress.percent}%"></span></div><div class="item-meta">${progress.served}/${progress.total} piatti</div></div>
+          ${statusBadge(closed ? "Chiusa" : "Aperta", closed ? "ok" : "warn")}
+        </div>
+      `;
+    }
+
+    function renderCanteenUser() {
+      if (!ui.canteenDate || !state.canteen.serviceDays.some((day) => day.date === ui.canteenDate)) ui.canteenDate = firstOpenMealDay();
+      const selectedDay = state.canteen.serviceDays.find((day) => day.date === ui.canteenDate) || sortedMealDays()[0];
+      const selectedDate = selectedDay?.date || firstMealDay();
+      const menu = getMenu(selectedDate);
+      const draft = getDraft(currentUser.id, selectedDate);
+      const lines = cartLines(selectedDate, draft);
+      const total = lines.reduce((sum, line) => sum + line.price * line.qty, 0);
+      const existing = state.canteen.bookings.find((booking) => booking.userId === currentUser.id && booking.serviceDate === selectedDate);
+      const isClosed = selectedDay?.status !== "open";
+
+      view.innerHTML = `
+        <section class="hero">
+          <div><p class="eyebrow">${roleLabel(currentUser.role)}</p><h2>Prenotazione mensa</h2><p>${selectedDay ? `Scadenza: ${escapeHtml(selectedDay.deadline)}` : "Nessun giorno aperto"}</p></div>
+          <div class="hero-actions">${renderDateTabs("meal-user-date", selectedDate)}</div>
+        </section>
+        <section class="grid user-col">
+          <div class="panel">
+            <div class="panel-head"><div><h3>Menu ${formatDate(selectedDate)}</h3><p>${existing ? "Prenotazione gia registrata" : `${menu.length} proposte disponibili`}</p></div>${selectedDay ? statusBadge(selectedDay.status === "open" ? "Aperto" : "Chiuso", selectedDay.status === "open" ? "ok" : "accent") : ""}</div>
+            <div class="meal-grid">${menu.length ? menu.map((dish) => renderMealCard(dish, selectedDate, draft[dish.id] || 0, isClosed)).join("") : emptyState("Menu non ancora disponibile")}</div>
+          </div>
+          <aside class="panel summary-panel">
+            <div class="panel-head"><div><h3>Riepilogo</h3><p>${escapeHtml(currentUser.name)}</p></div>${existing ? statusBadge(existing.paid ? "Pagato" : "Da pagare", existing.paid ? "ok" : "warn") : ""}</div>
+            ${lines.length ? `<ul class="summary-list">${lines.map((line) => `<li class="summary-line"><span><strong>${escapeHtml(line.name)}</strong><span class="muted"> x${line.qty} - ${escapeHtml(line.category)}</span></span><strong>${money(line.price * line.qty)}</strong></li>`).join("")}</ul>` : emptyState("Carrello vuoto")}
+            <div class="total-line"><span>Totale</span><span>${money(total)}</span></div>
+            <button class="btn btn-primary" type="button" data-action="save-meal-booking" ${!lines.length || isClosed ? "disabled" : ""}><i data-lucide="check-circle"></i> ${existing ? "Aggiorna prenotazione" : "Conferma prenotazione"}</button>
+            ${existing && !existing.paid ? `<button class="btn btn-danger" type="button" data-action="cancel-meal-booking" data-booking-id="${existing.id}"><i data-lucide="trash-2"></i> Cancella prenotazione</button>` : ""}
+          </aside>
+        </section>
+      `;
+    }
+    function renderMealCard(dish, date, qty, disabled) {
+      return `
+        <article class="meal-card">
+          <div class="meal-top"><div>${statusBadge(dish.category, categoryClass(dish.category))}<h3>${escapeHtml(dish.name)}</h3></div><strong class="price">${money(Number(dish.price))}</strong></div>
+          <div class="stepper">
+            <button class="btn icon-btn" type="button" data-action="cart-minus" data-date="${date}" data-dish-id="${dish.id}" ${disabled || qty === 0 ? "disabled" : ""} aria-label="Diminuisci"><i data-lucide="minus"></i></button>
+            <output>${qty}</output>
+            <button class="btn icon-btn" type="button" data-action="cart-plus" data-date="${date}" data-dish-id="${dish.id}" ${disabled ? "disabled" : ""} aria-label="Aumenta"><i data-lucide="plus"></i></button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderCanteenOperator() {
+      if (!ui.canteenDate || !state.canteen.serviceDays.some((day) => day.date === ui.canteenDate)) ui.canteenDate = firstMealDay();
+      const selectedDate = ui.canteenDate;
+      const stats = mealDayStats(selectedDate);
+      const bookings = filterOperatorBookings(stats.bookings);
+
+      view.innerHTML = `
+        <section class="hero">
+          <div><p class="eyebrow">Cassa e servizio</p><h2>Pranzo ${formatDate(selectedDate)}</h2><p>Ogni prenotazione resta aperta finche incasso e piatti non sono completati.</p></div>
+          <div class="hero-actions">${renderDateTabs("meal-operator-date", selectedDate)}</div>
+        </section>
+        <section class="grid metrics">
+          ${metricCard("Da incassare", money(stats.toCollect), `${money(stats.paid)} gia incassati`, "receipt")}
+          ${metricCard("Piatti da dare", stats.pendingItems, `${stats.servedItems}/${stats.totalItems} consegnati`, "utensils")}
+          ${metricCard("Persone", stats.bookings.length, `${stats.completedPeople} chiuse`, "users")}
+          ${metricCard("Totale giorno", money(stats.revenue), "prenotato", "banknote")}
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><h3>Prenotazioni operative</h3><p>${bookings.length} schede visualizzate</p></div><div class="filters">${operatorFilterButton("open", "Aperte")}${operatorFilterButton("unpaid", "Da incassare")}${operatorFilterButton("done", "Chiuse")}${operatorFilterButton("all", "Tutte")}</div></div>
+          <div class="ticket-grid">${bookings.length ? bookings.map(renderMealTicket).join("") : emptyState("Nessuna scheda in questo filtro")}</div>
+        </section>
+      `;
+    }
+    function filterOperatorBookings(bookings) {
+      if (ui.operatorFilter === "all") return bookings;
+      if (ui.operatorFilter === "unpaid") return bookings.filter((booking) => !booking.paid);
+      if (ui.operatorFilter === "done") return bookings.filter((booking) => booking.paid && mealProgress(booking).complete);
+      return bookings.filter((booking) => !(booking.paid && mealProgress(booking).complete));
+    }
+    function operatorFilterButton(value, label) {
+      return `<button class="tab ${ui.operatorFilter === value ? "is-active" : ""}" type="button" data-action="operator-filter" data-filter="${value}">${label}</button>`;
+    }
+    function renderMealTicket(booking) {
+      const progress = mealProgress(booking);
+      const complete = progress.complete && booking.paid;
+      return `
+        <article class="ticket">
+          <div class="ticket-head"><div><h3>${escapeHtml(booking.userName)}</h3><div class="item-meta">${statusBadge(booking.userRole, "blue")}${statusBadge(complete ? "Chiusa" : "Aperta", complete ? "ok" : "warn")}</div></div><strong class="price">${money(mealBookingTotal(booking))}</strong></div>
+          <div class="cash-row"><div><strong>${booking.paid ? "Incassato" : "Da incassare"}</strong><div class="muted">${money(mealBookingTotal(booking))}</div></div><button class="btn btn-small ${booking.paid ? "" : "btn-primary"}" type="button" data-action="toggle-paid" data-booking-id="${booking.id}"><i data-lucide="${booking.paid ? "undo-2" : "check"}"></i> ${booking.paid ? "Annulla" : "Incassa"}</button></div>
+          <div><div class="progress"><span style="width: ${progress.percent}%"></span></div><div class="item-meta">${progress.served}/${progress.total} piatti consegnati</div></div>
+          <div class="serve-list">${booking.items.map((item) => `<button class="serve-btn ${item.served ? "is-served" : ""}" type="button" data-action="toggle-served" data-booking-id="${booking.id}" data-line-id="${item.lineId}"><span class="check-dot">${item.served ? "✓" : ""}</span><span>${escapeHtml(item.name)} <span class="muted">x${item.qty}</span></span><span>${item.served ? "Dato" : "Da dare"}</span></button>`).join("")}</div>
+        </article>
+      `;
+    }
+
+    function renderRooms() {
+      if (currentUser.role === "admin") return renderRoomsAdmin();
+      return renderRoomsStudent();
+    }
+
+    function roomById(id) { return state.rooms.find((room) => room.id === id); }
+    function roomName(id) { return roomById(id)?.name || "Aula rimossa"; }
+    function roomBookingsFor(date, roomId) { return state.roomBookings.filter((booking) => booking.date === date && booking.roomId === roomId); }
+    function userRoomBookingsFor(date, userId = currentUser?.id) { return state.roomBookings.filter((booking) => booking.date === date && booking.userId === userId); }
+    function roomBookingHours(booking) { return (timeToMinutes(booking.end) - timeToMinutes(booking.start)) / 60; }
+    function userHoursForDate(date, userId = currentUser?.id) { return userRoomBookingsFor(date, userId).reduce((sum, booking) => sum + roomBookingHours(booking), 0); }
+    function activeRoom() {
+      if (!ui.selectedRoomId || !roomById(ui.selectedRoomId)) ui.selectedRoomId = state.rooms[0]?.id || "";
+      return roomById(ui.selectedRoomId);
+    }
+    function slotStatus(room, slot, date) {
+      const sameRoom = roomBookingsFor(date, room.id);
+      const booking = sameRoom.find((item) => intervalsOverlap(slot.start, slot.end, item.start, item.end));
+      if (booking) return booking.userId === currentUser.id ? "mine" : "taken";
+      const userOverlap = userRoomBookingsFor(date).find((item) => intervalsOverlap(slot.start, slot.end, item.start, item.end));
+      if (userOverlap) return "conflict";
+      if (date === dateOffset(0)) {
+        const now = new Date();
+        const nowMins = now.getHours() * 60 + now.getMinutes();
+        if (timeToMinutes(slot.start) < nowMins) return "disabled";
+      }
+      if (ui.selectedSlotStart === slot.start) return "selected";
+      return "free";
+    }
+    function slotReason(status) {
+      if (status === "mine") return "Tua";
+      if (status === "taken") return "Occupata";
+      if (status === "conflict") return "Conflitto";
+      if (status === "disabled") return "Passata";
+      return "Libera";
+    }
+
+    function renderRoomsStudent() {
+      const room = activeRoom();
+      const date = ui.roomDate || dateOffset(1);
+      const slots = room ? generateSlots(room.openFrom, room.openTo, state.roomSettings.slotDuration) : [];
+      const selectedSlot = slots.find((slot) => slot.start === ui.selectedSlotStart);
+      const myHours = userHoursForDate(date);
+      const limit = Number(state.roomSettings.dailyLimitHours);
+      const slotHours = Number(state.roomSettings.slotDuration) / 60;
+      const wouldExceed = selectedSlot && myHours + slotHours > limit + 0.001;
+      const upcoming = state.roomBookings
+        .filter((booking) => booking.userId === currentUser.id)
+        .sort((a, b) => (a.date + a.start).localeCompare(b.date + b.start));
+
+      view.innerHTML = `
+        <section class="hero">
+          <div><p class="eyebrow">Prenotazione aule</p><h2>Scegli aula e fascia oraria</h2><p>Limite giornaliero: ${limit} ore. L'app blocca aule occupate, fasce passate e sovrapposizioni con altre tue prenotazioni.</p></div>
+          <div class="hero-actions"><button class="btn" type="button" data-action="room-day" data-delta="-1"><i data-lucide="chevron-left"></i></button><span class="pill blue">${formatDate(date)}</span><button class="btn" type="button" data-action="room-day" data-delta="1"><i data-lucide="chevron-right"></i></button></div>
+        </section>
+        <section class="grid metrics">
+          ${metricCard("Ore oggi", myHours.toFixed(1), `su ${limit} h`, "clock")}
+          ${metricCard("Disponibili", Math.max(0, limit - myHours).toFixed(1), "ore residue", "timer")}
+          ${metricCard("Durata fascia", state.roomSettings.slotDuration, "minuti", "scan-line")}
+          ${metricCard("Aule", state.rooms.length, "configurate", "door-open")}
+        </section>
+        <section class="grid room-col">
+          <div class="panel">
+            <div class="panel-head"><div><h3>Aule</h3><p>Scegli lo spazio.</p></div></div>
+            <div class="room-grid" style="grid-template-columns: 1fr;">${state.rooms.length ? state.rooms.map(renderRoomChoice).join("") : emptyState("Nessuna aula configurata")}</div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>${room ? escapeHtml(room.name) : "Nessuna aula"}</h3><p>${room ? `${escapeHtml(room.location)} - aperta ${room.openFrom}-${room.openTo}` : ""}</p></div></div>
+            ${room ? `<div class="slot-grid">${slots.length ? slots.map((slot) => renderSlot(room, slot, date)).join("") : emptyState("Nessuna fascia disponibile")}</div>` : emptyState("Aggiungi un'aula da admin")}
+            <div class="item-meta" style="margin-top: 14px;">${statusBadge("Libera", "ok")}${statusBadge("Occupata", "")}${statusBadge("Tua", "blue")}${statusBadge("Conflitto", "warn")}</div>
+            ${selectedSlot ? `<div class="cash-row" style="margin-top: 16px;"><div><strong>${room.name}, ${selectedSlot.start}-${selectedSlot.end}</strong><div class="muted">${wouldExceed ? `Supera il limite di ${limit} ore` : "Pronta da confermare"}</div></div><button class="btn btn-primary" type="button" data-action="confirm-room-booking" ${wouldExceed ? "disabled" : ""}><i data-lucide="calendar-plus"></i> Conferma</button></div>` : ""}
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><h3>Le mie prenotazioni aule</h3><p>Puoi annullare le prenotazioni non ancora passate.</p></div></div>
+          <div class="list">${upcoming.length ? upcoming.map(renderMyRoomBooking).join("") : emptyState("Nessuna prenotazione aula")}</div>
+        </section>
+      `;
+    }
+    function renderRoomChoice(room) {
+      return `
+        <button class="room-card ${ui.selectedRoomId === room.id ? "is-selected" : ""}" type="button" data-action="select-room" data-room-id="${room.id}">
+          <div class="room-head"><div><span class="pill ${roomColorClass(room.color)}"><i data-lucide="${room.icon || "music"}"></i> Aula</span><h3>${escapeHtml(room.name)}</h3></div></div>
+          <p class="muted">${escapeHtml(room.location)}</p>
+          <div class="equipment">${room.equipment.slice(0, 4).map((item) => `<span class="pill">${escapeHtml(item)}</span>`).join("")}</div>
+        </button>
+      `;
+    }
+    function renderSlot(room, slot, date) {
+      const status = slotStatus(room, slot, date);
+      return `<button class="slot is-${status}" type="button" data-action="select-slot" data-room-id="${room.id}" data-start="${slot.start}" data-end="${slot.end}" ${["taken", "conflict", "disabled"].includes(status) ? "disabled" : ""}><span>${slot.start}</span><small>${slotReason(status)}</small></button>`;
+    }
+    function renderMyRoomBooking(booking) {
+      return `
+        <div class="line-item">
+          <div><p class="item-title">${escapeHtml(roomName(booking.roomId))}</p><div class="item-meta"><span>${formatDate(booking.date)}</span><span>${booking.start}-${booking.end}</span><span>${escapeHtml(roomById(booking.roomId)?.location || "")}</span></div></div>
+          <button class="btn btn-small btn-danger" type="button" data-action="cancel-room-booking" data-booking-id="${booking.id}"><i data-lucide="x"></i> Annulla</button>
+        </div>
+      `;
+    }
+
+    function renderRoomsAdmin() {
+      const bookings = [...state.roomBookings].sort((a, b) => (a.date + a.start).localeCompare(b.date + b.start));
+      const editing = ui.roomAdminEditId ? roomById(ui.roomAdminEditId) : null;
+      view.innerHTML = `
+        <section class="hero">
+          <div><p class="eyebrow">Admin aule</p><h2>Gestione aule e supervisione</h2><p>Configura aule, orari, limiti giornalieri e controlla tutte le prenotazioni.</p></div>
+        </section>
+        <section class="grid metrics">
+          ${metricCard("Aule", state.rooms.length, "configurate", "door-open")}
+          ${metricCard("Prenotazioni", state.roomBookings.length, "totali", "calendar-check")}
+          ${metricCard("Limite", state.roomSettings.dailyLimitHours, "ore al giorno", "timer")}
+          ${metricCard("Fascia", state.roomSettings.slotDuration, "minuti", "scan-line")}
+        </section>
+        ${renderLandingAdminPanel()}
+        <section class="grid two-col">
+          <div class="panel">
+            <div class="panel-head"><div><h3>Impostazioni aule</h3><p>Regole applicate a tutti gli studenti.</p></div></div>
+            <form class="field-grid" id="roomSettingsForm">
+              <div class="field"><label for="dailyLimitHours">Limite ore giornaliere</label><input id="dailyLimitHours" name="dailyLimitHours" type="number" min="0.5" step="0.5" value="${state.roomSettings.dailyLimitHours}" required></div>
+              <div class="field"><label for="slotDuration">Durata fascia</label><select id="slotDuration" name="slotDuration">${[30,45,60,90,120].map((value) => `<option value="${value}" ${Number(state.roomSettings.slotDuration) === value ? "selected" : ""}>${value} minuti</option>`).join("")}</select></div>
+              <div class="field full"><button class="btn btn-primary" type="submit"><i data-lucide="save"></i> Salva impostazioni</button></div>
+            </form>
+            <hr class="divider">
+            <div class="panel-head"><div><h3>${editing ? "Modifica aula" : "Nuova aula"}</h3><p>Nome, posizione, dotazione e apertura.</p></div></div>
+            ${renderRoomForm(editing)}
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>Aule</h3><p>Eliminando un'aula elimini anche le sue prenotazioni.</p></div></div>
+            <div class="list">${state.rooms.length ? state.rooms.map(renderAdminRoomRow).join("") : emptyState("Nessuna aula configurata")}</div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><h3>Tutte le prenotazioni aule</h3><p>Vista completa per supervisione.</p></div></div>
+          <div class="list">${bookings.length ? bookings.map(renderAdminRoomBooking).join("") : emptyState("Nessuna prenotazione registrata")}</div>
+        </section>
+      `;
+    }
+    function renderRoomForm(room) {
+      const equipment = room ? room.equipment.join(", ") : "";
+      return `
+        <form class="field-grid" id="roomForm" data-room-id="${room?.id || ""}">
+          <div class="field"><label for="roomName">Nome aula</label><input id="roomName" name="name" type="text" value="${escapeHtml(room?.name || "")}" placeholder="Es. Aula Piano A" required></div>
+          <div class="field"><label for="roomLocation">Posizione</label><input id="roomLocation" name="location" type="text" value="${escapeHtml(room?.location || "")}" placeholder="Edificio, piano" required></div>
+          <div class="field full"><label for="roomEquipment">Dotazione</label><input id="roomEquipment" name="equipment" type="text" value="${escapeHtml(equipment)}" placeholder="Pianoforte, leggio, specchio"></div>
+          <div class="field"><label for="roomIcon">Icona</label><select id="roomIcon" name="icon">${["music","piano","mic-2","guitar","speaker","door-open"].map((icon) => `<option value="${icon}" ${room?.icon === icon ? "selected" : ""}>${icon}</option>`).join("")}</select></div>
+          <div class="field"><label for="roomColor">Colore</label><select id="roomColor" name="color">${["green","red","blue"].map((color) => `<option value="${color}" ${room?.color === color ? "selected" : ""}>${color}</option>`).join("")}</select></div>
+          <div class="field"><label for="roomOpenFrom">Apertura</label><input id="roomOpenFrom" name="openFrom" type="time" value="${room?.openFrom || "09:00"}" required></div>
+          <div class="field"><label for="roomOpenTo">Chiusura</label><input id="roomOpenTo" name="openTo" type="time" value="${room?.openTo || "18:00"}" required></div>
+          <div class="field full actions"><button class="btn btn-primary" type="submit"><i data-lucide="save"></i> ${room ? "Salva aula" : "Aggiungi aula"}</button>${room ? `<button class="btn" type="button" data-action="cancel-room-edit">Annulla</button>` : ""}</div>
+        </form>
+      `;
+    }
+    function renderAdminRoomRow(room) {
+      const count = state.roomBookings.filter((booking) => booking.roomId === room.id).length;
+      return `
+        <div class="line-item">
+          <div><p class="item-title">${escapeHtml(room.name)}</p><div class="item-meta"><span>${escapeHtml(room.location)}</span><span>${room.openFrom}-${room.openTo}</span><span>${count} prenotazioni</span></div></div>
+          <div class="actions"><button class="btn btn-small" type="button" data-action="edit-room" data-room-id="${room.id}"><i data-lucide="edit-3"></i> Modifica</button><button class="btn btn-small btn-danger" type="button" data-action="delete-room" data-room-id="${room.id}"><i data-lucide="trash-2"></i></button></div>
+        </div>
+      `;
+    }
+    function renderAdminRoomBooking(booking) {
+      return `
+        <div class="line-item">
+          <div><p class="item-title">${escapeHtml(booking.userName)} <span class="muted">- ${escapeHtml(roomName(booking.roomId))}</span></p><div class="item-meta">${statusBadge(booking.userRole, "blue")}<span>${formatDate(booking.date)}</span><span>${booking.start}-${booking.end}</span></div></div>
+          <button class="btn btn-small btn-danger" type="button" data-action="cancel-room-booking" data-booking-id="${booking.id}"><i data-lucide="x"></i> Annulla</button>
+        </div>
+      `;
+    }
+
+    function getDraft(userId, date) {
+      const key = `${userId}:${date}`;
+      if (!drafts[key]) {
+        const existing = state.canteen.bookings.find((booking) => booking.userId === userId && booking.serviceDate === date);
+        drafts[key] = {};
+        if (existing) existing.items.forEach((item) => { drafts[key][item.dishId] = Number(item.qty || 1); });
+      }
+      return drafts[key];
+    }
+    function cartLines(date, draft) {
+      const menuById = new Map(getMenu(date).map((dish) => [dish.id, dish]));
+      return Object.entries(draft).filter(([, qty]) => Number(qty) > 0).map(([dishId, qty]) => {
+        const dish = menuById.get(dishId);
+        return dish ? { ...dish, qty: Number(qty) } : null;
+      }).filter(Boolean);
+    }
+    function updateDraft(date, dishId, delta) {
+      const draft = getDraft(currentUser.id, date);
+      const next = Math.max(0, Math.min(9, Number(draft[dishId] || 0) + delta));
+      if (next === 0) delete draft[dishId];
+      else draft[dishId] = next;
+    }
+
+    function metricCard(label, value, context, icon) {
+      return `<article class="metric"><div class="metric-top"><span>${label}</span><i data-lucide="${icon}"></i></div><div><strong>${value}</strong><small>${context}</small></div></article>`;
+    }
+    function statusBadge(label, variant) { return `<span class="status ${variant || ""}">${label}</span>`; }
+    function emptyState(text) { return `<div class="empty">${text}</div>`; }
+    function categoryClass(category) {
+      if (category === "Primo") return "ok";
+      if (category === "Secondo") return "accent";
+      if (category === "Contorno") return "warn";
+      return "blue";
+    }
+    function roomColorClass(color) {
+      if (color === "red") return "accent";
+      if (color === "blue") return "blue";
+      return "ok";
+    }
+    function renderDateTabs(action, selectedDate) {
+      const days = sortedMealDays();
+      return `<div class="tabs">${days.map((day) => `<button class="tab ${day.date === selectedDate ? "is-active" : ""}" type="button" data-action="${action}" data-date="${day.date}">${formatDate(day.date)}</button>`).join("")}</div>`;
+    }
+
+    function login(form) {
+      const data = new FormData(form);
+      const role = ui.loginRole;
+      if (role === "admin" || role === "operator") {
+        const password = String(data.get("password") || "");
+        if (password !== PASSWORDS[role]) { showToast("Password non corretta"); return; }
+        currentUser = { id: role, name: role === "admin" ? "Admin Campus" : "Operatore Mensa", role };
+      } else {
+        const firstName = String(data.get("firstName") || "").trim();
+        const lastName = String(data.get("lastName") || "").trim();
+        if (!firstName || !lastName) { showToast("Inserisci nome e cognome"); return; }
+        const name = `${firstName} ${lastName}`.replace(/\s+/g, " ");
+        currentUser = { id: `guest:${slugify(name)}:${role}`, name, role };
+      }
+      saveSession();
+      ui.module = roleModules(currentUser)[0] || "canteen";
+      showToast("Accesso effettuato");
+      render();
+    }
+    function logout() {
+      currentUser = null;
+      saveSession();
+      ui.module = "canteen";
+      render();
+    }
+
+    function saveMealPeriod(form) {
+      const data = new FormData(form);
+      const startDate = String(data.get("startDate") || "");
+      const endDate = String(data.get("endDate") || "");
+      if (!startDate || !endDate || startDate > endDate) { showToast("Controlla le date del periodo"); return; }
+      const range = daysBetween(startDate, endDate);
+      const existing = new Map(state.canteen.serviceDays.map((day) => [day.date, day]));
+      state.canteen.servicePeriod = { startDate, endDate };
+      state.canteen.serviceDays = range.map((date) => existing.get(date) || { date, status: "open", deadline: `${addDaysIso(date, -1)} 21:00` });
+      range.forEach((date) => { state.canteen.menu[date] = state.canteen.menu[date] || []; });
+      ui.canteenDate = startDate;
+      saveState();
+      showToast("Periodo mensa salvato");
+      render();
+    }
+    function addMealDay(form) {
+      const data = new FormData(form);
+      const date = String(data.get("date") || "");
+      if (!date) return;
+      if (state.canteen.serviceDays.some((day) => day.date === date)) { showToast("Giorno gia presente"); return; }
+      state.canteen.serviceDays.push({ date, status: "open", deadline: String(data.get("deadline") || "") });
+      state.canteen.serviceDays.sort((a, b) => a.date.localeCompare(b.date));
+      state.canteen.menu[date] = state.canteen.menu[date] || [];
+      if (date < state.canteen.servicePeriod.startDate) state.canteen.servicePeriod.startDate = date;
+      if (date > state.canteen.servicePeriod.endDate) state.canteen.servicePeriod.endDate = date;
+      ui.canteenDate = date;
+      saveState();
+      showToast("Giorno aggiunto");
+      render();
+    }
+    function addDish(form) {
+      const data = new FormData(form);
+      const date = String(data.get("date") || "");
+      const name = String(data.get("name") || "").trim();
+      const price = Number(data.get("price"));
+      if (!date || !name || Number.isNaN(price)) return;
+      state.canteen.menu[date] = state.canteen.menu[date] || [];
+      state.canteen.menu[date].push({ id: createId("dish"), name, category: String(data.get("category") || "Primo"), price, active: true });
+      saveState();
+      showToast("Piatto aggiunto");
+      render();
+    }
+    function saveMealBooking() {
+      const date = ui.canteenDate;
+      const lines = cartLines(date, getDraft(currentUser.id, date));
+      if (!lines.length) return;
+      const total = lines.reduce((sum, line) => sum + line.price * line.qty, 0);
+      if (!window.confirm(`Confermare prenotazione mensa per ${formatDate(date)}? Totale ${money(total)}`)) return;
+      const existingIndex = state.canteen.bookings.findIndex((booking) => booking.userId === currentUser.id && booking.serviceDate === date);
+      const existing = state.canteen.bookings[existingIndex];
+      const booking = {
+        id: existing?.id || createId("meal"),
+        serviceDate: date,
+        userId: currentUser.id,
+        userName: currentUser.name,
+        userRole: roleLabel(currentUser.role),
+        paid: existing?.paid || false,
+        createdAt: existing?.createdAt || new Date().toISOString(),
+        items: lines.map((line) => {
+          const previous = existing?.items.find((item) => item.dishId === line.id);
+          return { lineId: previous?.lineId || createId("line"), dishId: line.id, name: line.name, category: line.category, price: Number(line.price), qty: Number(line.qty), served: previous?.served || false };
+        })
+      };
+      if (existingIndex >= 0) state.canteen.bookings.splice(existingIndex, 1, booking);
+      else state.canteen.bookings.push(booking);
+      saveState();
+      showToast("Prenotazione mensa salvata");
+      render();
+    }
+
+    function saveRoomBooking() {
+      const room = activeRoom();
+      const slots = room ? generateSlots(room.openFrom, room.openTo, state.roomSettings.slotDuration) : [];
+      const slot = slots.find((item) => item.start === ui.selectedSlotStart);
+      if (!room || !slot) return;
+      const status = slotStatus(room, slot, ui.roomDate);
+      if (status !== "selected") { showToast("Fascia non disponibile"); return; }
+      const myHours = userHoursForDate(ui.roomDate);
+      const slotHours = Number(state.roomSettings.slotDuration) / 60;
+      if (myHours + slotHours > Number(state.roomSettings.dailyLimitHours) + 0.001) { showToast("Limite giornaliero superato"); return; }
+      state.roomBookings.push({ id: createId("room_booking"), roomId: room.id, userId: currentUser.id, userName: currentUser.name, userRole: roleLabel(currentUser.role), date: ui.roomDate, start: slot.start, end: slot.end, createdAt: new Date().toISOString() });
+      ui.selectedSlotStart = "";
+      saveState();
+      showToast("Aula prenotata");
+      render();
+    }
+    function saveRoomSettings(form) {
+      const data = new FormData(form);
+      state.roomSettings.dailyLimitHours = Math.max(0.5, Number(data.get("dailyLimitHours")) || 4);
+      state.roomSettings.slotDuration = Number(data.get("slotDuration")) || 60;
+      saveState();
+      showToast("Impostazioni aule salvate");
+      render();
+    }
+    function saveRoom(form) {
+      const data = new FormData(form);
+      const room = {
+        id: form.dataset.roomId || createId("room"),
+        name: String(data.get("name") || "").trim(),
+        location: String(data.get("location") || "").trim(),
+        equipment: String(data.get("equipment") || "").split(",").map((item) => item.trim()).filter(Boolean),
+        icon: String(data.get("icon") || "music"),
+        color: String(data.get("color") || "green"),
+        openFrom: String(data.get("openFrom") || "09:00"),
+        openTo: String(data.get("openTo") || "18:00")
+      };
+      if (!room.name || !room.location) return;
+      if (timeToMinutes(room.openTo) <= timeToMinutes(room.openFrom)) { showToast("La chiusura deve essere dopo l'apertura"); return; }
+      const index = state.rooms.findIndex((item) => item.id === room.id);
+      if (index >= 0) state.rooms.splice(index, 1, room);
+      else state.rooms.push(room);
+      ui.roomAdminEditId = "";
+      saveState();
+      showToast(index >= 0 ? "Aula aggiornata" : "Aula aggiunta");
+      render();
+    }
+
+    function setLandingBackground(file) {
+      if (currentUser?.role !== "admin") { showToast("Solo l'admin puo modificare lo sfondo"); return; }
+      if (!file) return;
+      if (!file.type.startsWith("image/")) { showToast("Seleziona una foto valida"); return; }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = new Image();
+        image.onload = () => {
+          const maxSide = 1800;
+          const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+          const width = Math.max(1, Math.round(image.width * scale));
+          const height = Math.max(1, Math.round(image.height * scale));
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+
+          const previous = state.landing?.backgroundImage || "";
+          state.landing = state.landing || {};
+          state.landing.backgroundImage = canvas.toDataURL("image/jpeg", 0.84);
+          if (saveState()) {
+            showToast("Sfondo aggiornato");
+          } else {
+            state.landing.backgroundImage = previous;
+          }
+          render();
+        };
+        image.onerror = () => showToast("Impossibile leggere la foto");
+        image.src = String(reader.result || "");
+      };
+      reader.onerror = () => showToast("Impossibile leggere la foto");
+      reader.readAsDataURL(file);
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("is-visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("is-visible"), 2400);
+    }
+    function refreshIcons() {
+      if (window.lucide) window.lucide.createIcons({ attrs: { width: 18, height: 18, "stroke-width": 2 } });
+    }
+
+    authPanel.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (event.target.id === "loginForm") login(event.target);
+    });
+    authPanel.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+      if (button.dataset.action === "login-role") { ui.loginRole = button.dataset.role; render(); }
+      if (button.dataset.action === "logout") logout();
+    });
+    moduleNav.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-action='module']");
+      if (!button) return;
+      ui.module = button.dataset.module;
+      render();
+    });
+    view.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (event.target.id === "mealPeriodForm") saveMealPeriod(event.target);
+      if (event.target.id === "mealDayForm") addMealDay(event.target);
+      if (event.target.id === "dishForm") addDish(event.target);
+      if (event.target.id === "roomSettingsForm") saveRoomSettings(event.target);
+      if (event.target.id === "roomForm") saveRoom(event.target);
+    });
+    view.addEventListener("change", (event) => {
+      const action = event.target.dataset.action;
+      if (action === "select-meal-admin-date") { ui.canteenDate = event.target.value; render(); }
+      if (action === "landing-background") setLandingBackground(event.target.files?.[0]);
+    });
+    view.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+      const action = button.dataset.action;
+      if (action === "reset-demo") { localStorage.removeItem(STORAGE_KEY); state = normalizeState(demoState()); draftsClear(); saveState(); showToast("Demo ripristinata"); render(); }
+      if (action === "clear-landing-background") {
+        if (currentUser?.role !== "admin") { showToast("Solo l'admin puo modificare lo sfondo"); return; }
+        state.landing = state.landing || {};
+        state.landing.backgroundImage = "";
+        saveState();
+        showToast("Sfondo rimosso");
+        render();
+      }
+      if (action === "use-meal-admin-date" || action === "meal-user-date" || action === "meal-operator-date") { ui.canteenDate = button.dataset.date; render(); }
+      if (action === "toggle-meal-day") {
+        const day = state.canteen.serviceDays.find((item) => item.date === button.dataset.date);
+        if (day) { day.status = day.status === "open" ? "closed" : "open"; saveState(); render(); }
+      }
+      if (action === "delete-dish") {
+        state.canteen.menu[button.dataset.date] = (state.canteen.menu[button.dataset.date] || []).map((dish) => dish.id === button.dataset.dishId ? { ...dish, active: false } : dish);
+        saveState(); showToast("Piatto rimosso"); render();
+      }
+      if (action === "cart-plus") { updateDraft(button.dataset.date, button.dataset.dishId, 1); render(); }
+      if (action === "cart-minus") { updateDraft(button.dataset.date, button.dataset.dishId, -1); render(); }
+      if (action === "save-meal-booking") saveMealBooking();
+      if (action === "cancel-meal-booking") {
+        const booking = state.canteen.bookings.find((item) => item.id === button.dataset.bookingId);
+        if (booking && !booking.paid) { state.canteen.bookings = state.canteen.bookings.filter((item) => item.id !== booking.id); delete drafts[`${booking.userId}:${booking.serviceDate}`]; saveState(); showToast("Prenotazione cancellata"); render(); }
+      }
+      if (action === "operator-filter") { ui.operatorFilter = button.dataset.filter; render(); }
+      if (action === "toggle-paid") {
+        const booking = state.canteen.bookings.find((item) => item.id === button.dataset.bookingId);
+        if (booking) { booking.paid = !booking.paid; saveState(); render(); }
+      }
+      if (action === "toggle-served") {
+        const booking = state.canteen.bookings.find((item) => item.id === button.dataset.bookingId);
+        const item = booking?.items.find((line) => line.lineId === button.dataset.lineId);
+        if (item) { item.served = !item.served; saveState(); render(); }
+      }
+      if (action === "room-day") { ui.roomDate = addDaysIso(ui.roomDate, Number(button.dataset.delta)); ui.selectedSlotStart = ""; render(); }
+      if (action === "select-room") { ui.selectedRoomId = button.dataset.roomId; ui.selectedSlotStart = ""; render(); }
+      if (action === "select-slot") { ui.selectedRoomId = button.dataset.roomId; ui.selectedSlotStart = ui.selectedSlotStart === button.dataset.start ? "" : button.dataset.start; render(); }
+      if (action === "confirm-room-booking") saveRoomBooking();
+      if (action === "cancel-room-booking") {
+        state.roomBookings = state.roomBookings.filter((booking) => booking.id !== button.dataset.bookingId);
+        saveState(); showToast("Prenotazione aula annullata"); render();
+      }
+      if (action === "edit-room") { ui.roomAdminEditId = button.dataset.roomId; render(); }
+      if (action === "cancel-room-edit") { ui.roomAdminEditId = ""; render(); }
+      if (action === "delete-room") {
+        const room = roomById(button.dataset.roomId);
+        if (room && window.confirm(`Eliminare ${room.name}? Verranno eliminate anche le prenotazioni.`)) {
+          state.rooms = state.rooms.filter((item) => item.id !== room.id);
+          state.roomBookings = state.roomBookings.filter((booking) => booking.roomId !== room.id);
+          if (ui.selectedRoomId === room.id) ui.selectedRoomId = state.rooms[0]?.id || "";
+          saveState(); showToast("Aula eliminata"); render();
+        }
+      }
+    });
+    function draftsClear() { Object.keys(drafts).forEach((key) => delete drafts[key]); }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      render();
+      initializeRemoteState();
+    });
+  </script>
+</body>
+</html>
