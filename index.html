@@ -796,7 +796,7 @@
     const STORAGE_KEY = "campusUnifiedState.v1";
     const SESSION_KEY = "campusUnifiedSession.v1";
     const APP_STATE_ID = "campus-orizzonti-armonici-2026";
-    const PASSWORDS = { admin: "admin2026", operator: "mensa2026" };
+    const DEFAULT_PASSWORDS = { admin: "admin2026", operator: "mensa2026" };
     const categories = ["Primo", "Secondo", "Contorno", "Dolce", "Bevanda"];
     const supabaseSettings = window.CAMPUS_SUPABASE || {};
     const hasSupabaseConfig = Boolean(
@@ -1035,6 +1035,10 @@
       next.rooms = Array.isArray(next.rooms) ? next.rooms : [];
       next.roomBookings = Array.isArray(next.roomBookings) ? next.roomBookings : [];
       next.roomSettings = next.roomSettings || { dailyLimitHours: 4, slotDuration: 60 };
+      next.people = Array.isArray(next.people) ? next.people : [];
+      next.passwords = next.passwords && typeof next.passwords === "object" ? next.passwords : {};
+      next.passwords.admin = String(next.passwords.admin || DEFAULT_PASSWORDS.admin);
+      next.passwords.operator = String(next.passwords.operator || DEFAULT_PASSWORDS.operator);
       next.canteen.serviceDays.forEach((day) => { next.canteen.menu[day.date] = next.canteen.menu[day.date] || []; });
       return next;
     }
@@ -1057,7 +1061,9 @@
         },
         rooms: [],
         roomSettings: { dailyLimitHours: 4, slotDuration: 60 },
-        roomBookings: []
+        roomBookings: [],
+        people: [],
+        passwords: { ...DEFAULT_PASSWORDS }
       };
     }
 
@@ -1066,7 +1072,8 @@
     }
     function roleModules(user) {
       if (!user) return [];
-      if (user.role === "admin" || user.role === "student") return ["canteen", "rooms"];
+      if (user.role === "admin") return ["canteen", "rooms", "people"];
+      if (user.role === "student") return ["canteen", "rooms"];
       return ["canteen"];
     }
     function canAccessModule(module) { return roleModules(currentUser).includes(module); }
@@ -1092,7 +1099,8 @@
       renderModuleNav();
       if (!currentUser) renderWelcome();
       else if (ui.module === "canteen") renderCanteen();
-      else renderRooms();
+      else if (ui.module === "rooms") renderRooms();
+      else renderPeople();
       refreshIcons();
     }
 
@@ -1139,6 +1147,10 @@
     function staffFields() {
       return `
         <div class="auth-field">
+          <label for="staffName">Nome e cognome (facoltativo)</label>
+          <input class="auth-input" id="staffName" name="staffName" type="text" autocomplete="name" placeholder="Per sapere chi ha fatto cosa">
+        </div>
+        <div class="auth-field">
           <label for="staffPassword">Password ${roleLabel(ui.loginRole)}</label>
           <input class="auth-input" id="staffPassword" name="password" type="password" autocomplete="current-password" required>
         </div>
@@ -1150,10 +1162,10 @@
         moduleNav.innerHTML = `<div class="side-link is-active"><i data-lucide="log-in"></i><span>Accesso</span></div>`;
         return;
       }
+      const moduleLabels = { canteen: "Mensa", rooms: "Aule", people: "Persone" };
+      const moduleIcons = { canteen: "utensils", rooms: "door-open", people: "users" };
       moduleNav.innerHTML = roleModules(currentUser).map((module) => {
-        const label = module === "canteen" ? "Mensa" : "Aule";
-        const icon = module === "canteen" ? "utensils" : "door-open";
-        return `<button class="side-link ${ui.module === module ? "is-active" : ""}" type="button" data-action="module" data-module="${module}"><i data-lucide="${icon}"></i><span>${label}</span></button>`;
+        return `<button class="side-link ${ui.module === module ? "is-active" : ""}" type="button" data-action="module" data-module="${module}"><i data-lucide="${moduleIcons[module]}"></i><span>${moduleLabels[module]}</span></button>`;
       }).join("");
     }
 
@@ -1594,6 +1606,51 @@
       `;
     }
 
+    function formatDateTime(isoString) {
+      if (!isoString) return "";
+      return new Intl.DateTimeFormat("it-IT", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).format(new Date(isoString));
+    }
+    function renderPeople() {
+      const people = [...state.people].sort((a, b) => b.lastSeenAt.localeCompare(a.lastSeenAt));
+      const students = people.filter((person) => person.role === "student").length;
+      const teachers = people.filter((person) => person.role === "teacher").length;
+      const staff = people.filter((person) => person.role === "admin" || person.role === "operator").length;
+
+      view.innerHTML = `
+        <section class="hero">
+          <div><p class="eyebrow">Admin</p><h2>Persone registrate</h2><p>Ogni accesso con nome (studenti, docenti, e admin/operatore se indicano il proprio nome) viene aggiunto qui automaticamente.</p></div>
+        </section>
+        <section class="grid metrics">
+          ${metricCard("Persone totali", people.length, "accessi registrati", "users")}
+          ${metricCard("Studenti", students, "accessi registrati", "graduation-cap")}
+          ${metricCard("Docenti", teachers, "accessi registrati", "user-check")}
+          ${metricCard("Staff", staff, "admin e operatori", "shield-check")}
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><h3>Elenco persone</h3><p>${people.length} persone nel database condiviso.</p></div></div>
+          <div class="list">${people.length ? people.map(renderPersonRow).join("") : emptyState("Nessun accesso registrato finora")}</div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><h3>Password di accesso</h3><p>Cambia le password condivise per Admin e Operatore. Lascia vuoto il campo che non vuoi modificare.</p></div></div>
+          <form class="field-grid" id="passwordsForm">
+            <div class="field"><label for="newAdminPassword">Nuova password Admin</label><input id="newAdminPassword" name="adminPassword" type="text" placeholder="Lascia vuoto per non cambiare"></div>
+            <div class="field"><label for="newOperatorPassword">Nuova password Operatore</label><input id="newOperatorPassword" name="operatorPassword" type="text" placeholder="Lascia vuoto per non cambiare"></div>
+            <div class="field full"><button class="btn btn-primary" type="submit"><i data-lucide="key-round"></i> Salva password</button></div>
+          </form>
+        </section>
+      `;
+    }
+    function renderPersonRow(person) {
+      const mealCount = state.canteen.bookings.filter((booking) => booking.userId === person.id).length;
+      const roomCount = state.roomBookings.filter((booking) => booking.userId === person.id).length;
+      return `
+        <div class="line-item">
+          <div><p class="item-title">${escapeHtml(person.name)}</p><div class="item-meta">${statusBadge(roleLabel(person.role), "blue")}<span>Primo accesso: ${formatDateTime(person.firstSeenAt)}</span><span>Ultimo accesso: ${formatDateTime(person.lastSeenAt)}</span></div></div>
+          <div class="item-meta"><span>${mealCount} prenotazioni mensa</span><span>${roomCount} prenotazioni aule</span></div>
+        </div>
+      `;
+    }
+
     function getDraft(userId, date) {
       const key = `${userId}:${date}`;
       if (!drafts[key]) {
@@ -1643,19 +1700,35 @@
       const role = ui.loginRole;
       if (role === "admin" || role === "operator") {
         const password = String(data.get("password") || "");
-        if (password !== PASSWORDS[role]) { showToast("Password non corretta"); return; }
-        currentUser = { id: role, name: role === "admin" ? "Admin Campus" : "Operatore Mensa", role };
+        if (password !== state.passwords[role]) { showToast("Password non corretta"); return; }
+        const staffName = String(data.get("staffName") || "").trim();
+        const defaultName = role === "admin" ? "Admin Campus" : "Operatore Mensa";
+        currentUser = { id: staffName ? `staff:${slugify(staffName)}:${role}` : role, name: staffName || defaultName, role };
+        if (staffName) registerPerson(currentUser);
       } else {
         const firstName = String(data.get("firstName") || "").trim();
         const lastName = String(data.get("lastName") || "").trim();
         if (!firstName || !lastName) { showToast("Inserisci nome e cognome"); return; }
         const name = `${firstName} ${lastName}`.replace(/\s+/g, " ");
         currentUser = { id: `guest:${slugify(name)}:${role}`, name, role };
+        registerPerson(currentUser);
       }
       saveSession();
       ui.module = roleModules(currentUser)[0] || "canteen";
       showToast("Accesso effettuato");
       render();
+    }
+    function registerPerson(user) {
+      const now = new Date().toISOString();
+      const existing = state.people.find((person) => person.id === user.id);
+      if (existing) {
+        existing.name = user.name;
+        existing.role = user.role;
+        existing.lastSeenAt = now;
+      } else {
+        state.people.push({ id: user.id, name: user.name, role: user.role, firstSeenAt: now, lastSeenAt: now });
+      }
+      saveState();
     }
     function logout() {
       currentUser = null;
@@ -1748,6 +1821,17 @@
       ui.selectedSlotStart = "";
       saveState();
       showToast("Aula prenotata");
+      render();
+    }
+    function savePasswords(form) {
+      const data = new FormData(form);
+      const adminPassword = String(data.get("adminPassword") || "").trim();
+      const operatorPassword = String(data.get("operatorPassword") || "").trim();
+      if (!adminPassword && !operatorPassword) { showToast("Inserisci almeno una nuova password"); return; }
+      if (adminPassword) state.passwords.admin = adminPassword;
+      if (operatorPassword) state.passwords.operator = operatorPassword;
+      saveState();
+      showToast("Password aggiornate");
       render();
     }
     function saveRoomSettings(form) {
@@ -1848,6 +1932,7 @@
       if (event.target.id === "mealDayForm") addMealDay(event.target);
       if (event.target.id === "dishForm") addDish(event.target);
       if (event.target.id === "roomSettingsForm") saveRoomSettings(event.target);
+      if (event.target.id === "passwordsForm") savePasswords(event.target);
       if (event.target.id === "roomForm") saveRoom(event.target);
     });
     view.addEventListener("change", (event) => {
