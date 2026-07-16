@@ -777,9 +777,22 @@
       .hero, .panel { padding: 16px; }
       .hero { grid-template-columns: 1fr; }
       .hero-actions { justify-content: flex-start; }
+      .hero.landing { min-height: 0; padding: 28px 20px; }
       .metrics, .meal-grid, .room-grid, .ticket-grid, .field-grid, .side-nav { grid-template-columns: 1fr; }
-      .day-item, .dish-item, .booking-row, .line-item { grid-template-columns: 1fr; }
       .actions { justify-content: flex-start; }
+
+      .panel-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .panel-head select { width: 100%; }
+
+      .day-item, .dish-item, .booking-row, .line-item {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        row-gap: 10px;
+      }
+      .day-item > *:first-child, .dish-item > *:first-child, .booking-row > *:first-child, .line-item > *:first-child {
+        flex: 1 1 100%;
+      }
     }
   </style>
 </head>
