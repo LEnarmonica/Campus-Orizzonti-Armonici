@@ -899,7 +899,7 @@
       if (stored) {
         try { return normalizeState(JSON.parse(stored)); } catch (error) { console.warn(error); }
       }
-      return normalizeState(demoState());
+      return normalizeState(blankState());
     }
     function saveState() {
       let localSaved = true;
@@ -1008,7 +1008,7 @@
         .subscribe();
     }
     function normalizeState(value) {
-      const next = value && typeof value === "object" ? value : demoState();
+      const next = value && typeof value === "object" ? value : blankState();
       next.landing = next.landing && typeof next.landing === "object" ? next.landing : { backgroundImage: "" };
       next.landing.backgroundImage = typeof next.landing.backgroundImage === "string" ? next.landing.backgroundImage : "";
       next.canteen = next.canteen || {};
@@ -1029,69 +1029,22 @@
       return { startDate: dates[0] || dateOffset(1), endDate: dates[dates.length - 1] || dateOffset(1) };
     }
 
-    function demoState() {
+    function blankState() {
       const tomorrow = dateOffset(1);
-      const dayAfter = dateOffset(2);
-      const dishesTomorrow = [
-        { id: "dish_1", name: "Trofie al pesto leggero", category: "Primo", price: 6.5, active: true },
-        { id: "dish_2", name: "Pollo al limone con erbe", category: "Secondo", price: 8, active: true },
-        { id: "dish_3", name: "Verdure grigliate", category: "Contorno", price: 3.5, active: true },
-        { id: "dish_4", name: "Crostata albicocca", category: "Dolce", price: 3, active: true },
-        { id: "dish_5", name: "Acqua naturale", category: "Bevanda", price: 1.2, active: true }
-      ];
-      const dishesDayAfter = [
-        { id: "dish_6", name: "Riso venere con zucchine", category: "Primo", price: 6.8, active: true },
-        { id: "dish_7", name: "Frittata al forno", category: "Secondo", price: 7.2, active: true },
-        { id: "dish_8", name: "Insalata mista", category: "Contorno", price: 3, active: true }
-      ];
       return {
         landing: {
           backgroundImage: ""
         },
         canteen: {
-          servicePeriod: { startDate: tomorrow, endDate: dayAfter },
-          serviceDays: [
-            { date: tomorrow, status: "open", deadline: `${dateOffset(0)} 21:00` },
-            { date: dayAfter, status: "open", deadline: `${tomorrow} 21:00` }
-          ],
-          menu: { [tomorrow]: dishesTomorrow, [dayAfter]: dishesDayAfter },
-          bookings: [
-            {
-              id: "meal_demo_1",
-              serviceDate: tomorrow,
-              userId: "guest:giulia-rossi:student",
-              userName: "Giulia Rossi",
-              userRole: "Studente",
-              paid: false,
-              createdAt: new Date().toISOString(),
-              items: [mealLine(dishesTomorrow[0], 1), mealLine(dishesTomorrow[1], 1), mealLine(dishesTomorrow[4], 1)]
-            },
-            {
-              id: "meal_demo_2",
-              serviceDate: tomorrow,
-              userId: "guest:andrea-conti:teacher",
-              userName: "Andrea Conti",
-              userRole: "Docente",
-              paid: true,
-              createdAt: new Date().toISOString(),
-              items: [{ ...mealLine(dishesTomorrow[0], 1), served: true }, mealLine(dishesTomorrow[2], 1)]
-            }
-          ]
+          servicePeriod: { startDate: tomorrow, endDate: tomorrow },
+          serviceDays: [],
+          menu: {},
+          bookings: []
         },
-        rooms: [
-          { id: "room_1", name: "Aula Piano A", location: "Edificio principale, piano 1", equipment: ["Pianoforte a coda", "Sgabello regolabile", "Specchio"], icon: "piano", color: "green", openFrom: "09:00", openTo: "18:00" },
-          { id: "room_2", name: "Sala Canto B", location: "Edificio principale, piano 1", equipment: ["Insonorizzata", "Pianoforte verticale", "Leggio"], icon: "mic-2", color: "red", openFrom: "09:00", openTo: "18:00" },
-          { id: "room_3", name: "Sala Ensemble C", location: "Padiglione musica, piano terra", equipment: ["Capienza 6 persone", "Sedie", "Leggii multipli"], icon: "guitar", color: "blue", openFrom: "08:00", openTo: "20:00" }
-        ],
+        rooms: [],
         roomSettings: { dailyLimitHours: 4, slotDuration: 60 },
-        roomBookings: [
-          { id: "room_booking_1", roomId: "room_1", userId: "guest:giulia-rossi:student", userName: "Giulia Rossi", userRole: "Studente", date: tomorrow, start: "10:00", end: "11:00", createdAt: new Date().toISOString() },
-          { id: "room_booking_2", roomId: "room_2", userId: "guest:marco-neri:student", userName: "Marco Neri", userRole: "Studente", date: tomorrow, start: "11:00", end: "12:00", createdAt: new Date().toISOString() }
-        ]
+        roomBookings: []
       };
-    }
-    function mealLine(dish, qty) {
-      return { lineId: createId("line"), dishId: dish.id, name: dish.name, category: dish.category, price: Number(dish.price), qty, served: false };
     }
 
     function roleLabel(role) {
@@ -1274,7 +1227,6 @@
             <h2>Menu, prenotazioni e budget pranzo</h2>
             <p>Periodo servizio: ${servicePeriodLabel()}. Da qui apri i giorni, carichi i piatti e controlli incassi e persone servite.</p>
           </div>
-          <div class="hero-actions"><button class="btn" type="button" data-action="reset-demo"><i data-lucide="rotate-ccw"></i> Ripristina demo</button></div>
         </section>
         <section class="grid metrics">
           ${metricCard("Budget periodo", money(totals.revenue), `${money(totals.paid)} incassati`, "euro")}
@@ -1893,7 +1845,6 @@
       const button = event.target.closest("[data-action]");
       if (!button) return;
       const action = button.dataset.action;
-      if (action === "reset-demo") { localStorage.removeItem(STORAGE_KEY); state = normalizeState(demoState()); draftsClear(); saveState(); showToast("Demo ripristinata"); render(); }
       if (action === "clear-landing-background") {
         if (currentUser?.role !== "admin") { showToast("Solo l'admin puo modificare lo sfondo"); return; }
         state.landing = state.landing || {};
