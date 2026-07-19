@@ -1239,8 +1239,50 @@
     function sortedMealDays() { return [...state.canteen.serviceDays].sort((a, b) => a.date.localeCompare(b.date)); }
     function getMenu(date) { return (state.canteen.menu[date] || []).filter((dish) => dish.active !== false); }
     function firstMealDay() { return sortedMealDays()[0]?.date || dateOffset(1); }
-    function firstOpenMealDay() { return sortedMealDays().find((day) => day.status === "open")?.date || firstMealDay(); }
-    function mealBookingTotal(booking) { return booking.items.reduce((sum, item) => sum + Number(item.price) * Number(item.qty || 1), 0); }
+    function firstOpenMealDay() { return sortedMealDays().find((day) => day.status === "open" && !isServiceDayLocked(day))?.date || firstMealDay(); }
+    const WATER_DISH_ID = "included-water";
+    const COMBO_FIXED_PRICE = 18;
+    function computeMealPricing(items) {
+      const primoUnits = [];
+      const secondoUnits = [];
+      let othersTotal = 0;
+      items.forEach((item) => {
+        const price = Number(item.price) || 0;
+        const qty = Number(item.qty) || 0;
+        if (item.category === "Primo") { for (let i = 0; i < qty; i += 1) primoUnits.push(price); }
+        else if (item.category === "Secondo") { for (let i = 0; i < qty; i += 1) secondoUnits.push(price); }
+        else othersTotal += price * qty;
+      });
+      primoUnits.sort((a, b) => b - a);
+      secondoUnits.sort((a, b) => b - a);
+      const comboPairs = Math.min(primoUnits.length, secondoUnits.length);
+      const comboTotal = comboPairs * COMBO_FIXED_PRICE;
+      const pairedValue = primoUnits.slice(0, comboPairs).reduce((sum, p) => sum + p, 0) + secondoUnits.slice(0, comboPairs).reduce((sum, p) => sum + p, 0);
+      const extraValue = primoUnits.slice(comboPairs).reduce((sum, p) => sum + p, 0) + secondoUnits.slice(comboPairs).reduce((sum, p) => sum + p, 0);
+      const discount = pairedValue - comboTotal;
+      const total = comboTotal + extraValue + othersTotal;
+      return { total, comboPairs, comboTotal, discount, othersTotal };
+    }
+    function mealBookingTotal(booking) { return computeMealPricing(booking.items).total; }
+    function serviceDayDeadlineDate(day) {
+      if (!day) return null;
+      const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{1,2}):(\d{2})/.exec(String(day.deadline || "").trim());
+      if (match) {
+        const [, isoDate, hh, mm] = match;
+        const date = isoToDate(isoDate);
+        date.setHours(Number(hh), Number(mm), 0, 0);
+        return date;
+      }
+      const fallback = isoToDate(addDaysIso(day.date, -1));
+      fallback.setHours(21, 0, 0, 0);
+      return fallback;
+    }
+    function isServiceDayLocked(day) {
+      if (!day) return true;
+      if (day.status !== "open") return true;
+      const deadline = serviceDayDeadlineDate(day);
+      return Boolean(deadline) && new Date() >= deadline;
+    }
     function mealProgress(booking) {
       const total = booking.items.reduce((sum, item) => sum + Number(item.qty || 1), 0);
       const served = booking.items.reduce((sum, item) => sum + (item.served ? Number(item.qty || 1) : 0), 0);
@@ -1385,26 +1427,31 @@
       const menu = getMenu(selectedDate);
       const draft = getDraft(currentUser.id, selectedDate);
       const lines = cartLines(selectedDate, draft);
-      const total = lines.reduce((sum, line) => sum + line.price * line.qty, 0);
+      const pricing = computeMealPricing(lines);
       const existing = state.canteen.bookings.find((booking) => booking.userId === currentUser.id && booking.serviceDate === selectedDate);
-      const isClosed = selectedDay?.status !== "open";
+      const isLocked = isServiceDayLocked(selectedDay);
 
       view.innerHTML = `
         <section class="hero">
-          <div><p class="eyebrow">${roleLabel(currentUser.role)}</p><h2>Prenotazione mensa</h2><p>${selectedDay ? `Scadenza: ${escapeHtml(selectedDay.deadline)}` : "Nessun giorno aperto"}</p></div>
+          <div><p class="eyebrow">${roleLabel(currentUser.role)}</p><h2>Prenotazione mensa</h2><p>${selectedDay ? `Scadenza: ${escapeHtml(selectedDay.deadline)}${isLocked ? " (scaduta)" : ""}` : "Nessun giorno aperto"}</p></div>
           <div class="hero-actions">${renderDateTabs("meal-user-date", selectedDate)}</div>
         </section>
         <section class="grid user-col">
           <div class="panel">
-            <div class="panel-head"><div><h3>Menu ${formatDate(selectedDate)}</h3><p>${existing ? "Prenotazione gia registrata" : `${menu.length} proposte disponibili`}</p></div>${selectedDay ? statusBadge(selectedDay.status === "open" ? "Aperto" : "Chiuso", selectedDay.status === "open" ? "ok" : "accent") : ""}</div>
-            <div class="meal-grid">${menu.length ? menu.map((dish) => renderMealCard(dish, selectedDate, draft[dish.id] || 0, isClosed)).join("") : emptyState("Menu non ancora disponibile")}</div>
+            <div class="panel-head"><div><h3>Menu ${formatDate(selectedDate)}</h3><p>${existing ? "Prenotazione gia registrata" : `${menu.length} proposte disponibili`}</p></div>${selectedDay ? statusBadge(isLocked ? "Chiuso" : "Aperto", isLocked ? "accent" : "ok") : ""}</div>
+            <div class="meal-grid">${menu.length ? menu.map((dish) => renderMealCard(dish, selectedDate, draft[dish.id] || 0, isLocked)).join("") : emptyState("Menu non ancora disponibile")}</div>
           </div>
           <aside class="panel summary-panel">
             <div class="panel-head"><div><h3>Riepilogo</h3><p>${escapeHtml(currentUser.name)}</p></div>${existing ? statusBadge(existing.paid ? "Pagato" : "Da pagare", existing.paid ? "ok" : "warn") : ""}</div>
-            ${lines.length ? `<ul class="summary-list">${lines.map((line) => `<li class="summary-line"><span><strong>${escapeHtml(line.name)}</strong><span class="muted"> x${line.qty} - ${escapeHtml(line.category)}</span></span><strong>${money(line.price * line.qty)}</strong></li>`).join("")}</ul>` : emptyState("Carrello vuoto")}
-            <div class="total-line"><span>Totale</span><span>${money(total)}</span></div>
-            <button class="btn btn-primary" type="button" data-action="save-meal-booking" ${!lines.length || isClosed ? "disabled" : ""}><i data-lucide="check-circle"></i> ${existing ? "Aggiorna prenotazione" : "Conferma prenotazione"}</button>
-            ${existing && !existing.paid ? `<button class="btn btn-danger" type="button" data-action="cancel-meal-booking" data-booking-id="${existing.id}"><i data-lucide="trash-2"></i> Cancella prenotazione</button>` : ""}
+            ${lines.length ? `<ul class="summary-list">
+              ${lines.map((line) => `<li class="summary-line"><span><strong>${escapeHtml(line.name)}</strong><span class="muted"> x${line.qty} - ${escapeHtml(line.category)}</span></span><strong>${money(line.price * line.qty)}</strong></li>`).join("")}
+              ${pricing.comboPairs > 0 ? `<li class="summary-line"><span><strong>${pricing.discount >= 0 ? "Sconto" : "Supplemento"} menu Primo + Secondo</strong><span class="muted"> × ${pricing.comboPairs} (fisso ${money(COMBO_FIXED_PRICE)} a coppia)</span></span><strong>${pricing.discount >= 0 ? "-" : "+"}${money(Math.abs(pricing.discount))}</strong></li>` : ""}
+              <li class="summary-line"><span><strong>Bottiglietta d'acqua</strong><span class="muted"> inclusa in ogni prenotazione</span></span><strong>${money(0)}</strong></li>
+            </ul>` : emptyState("Carrello vuoto")}
+            <div class="total-line"><span>Totale</span><span>${money(pricing.total)}</span></div>
+            <button class="btn btn-primary" type="button" data-action="save-meal-booking" ${!lines.length || isLocked ? "disabled" : ""}><i data-lucide="check-circle"></i> ${existing ? "Aggiorna prenotazione" : "Conferma prenotazione"}</button>
+            ${existing && !existing.paid ? `<button class="btn btn-danger" type="button" data-action="cancel-meal-booking" data-booking-id="${existing.id}" ${isLocked ? "disabled" : ""}><i data-lucide="trash-2"></i> Cancella prenotazione</button>` : ""}
+            ${isLocked ? `<p class="muted">Il termine per prenotare, modificare o annullare questo giorno e scaduto.</p>` : ""}
           </aside>
         </section>
       `;
@@ -1700,6 +1747,8 @@
       }).filter(Boolean);
     }
     function updateDraft(date, dishId, delta) {
+      const day = state.canteen.serviceDays.find((item) => item.date === date);
+      if (isServiceDayLocked(day)) { showToast("Il termine per prenotare questo giorno e scaduto"); return; }
       const draft = getDraft(currentUser.id, date);
       const next = Math.max(0, Math.min(9, Number(draft[dishId] || 0) + delta));
       if (next === 0) delete draft[dishId];
@@ -1813,12 +1862,20 @@
     }
     function saveMealBooking() {
       const date = ui.canteenDate;
+      const day = state.canteen.serviceDays.find((item) => item.date === date);
+      if (isServiceDayLocked(day)) { showToast("Il termine per prenotare questo giorno e scaduto"); return; }
       const lines = cartLines(date, getDraft(currentUser.id, date));
       if (!lines.length) return;
-      const total = lines.reduce((sum, line) => sum + line.price * line.qty, 0);
-      if (!window.confirm(`Confermare prenotazione mensa per ${formatDate(date)}? Totale ${money(total)}`)) return;
+      const pricing = computeMealPricing(lines);
+      if (!window.confirm(`Confermare prenotazione mensa per ${formatDate(date)}? Totale ${money(pricing.total)}`)) return;
       const existingIndex = state.canteen.bookings.findIndex((booking) => booking.userId === currentUser.id && booking.serviceDate === date);
       const existing = state.canteen.bookings[existingIndex];
+      const items = lines.map((line) => {
+        const previous = existing?.items.find((item) => item.dishId === line.id);
+        return { lineId: previous?.lineId || createId("line"), dishId: line.id, name: line.name, category: line.category, price: Number(line.price), qty: Number(line.qty), served: previous?.served || false };
+      });
+      const previousWater = existing?.items.find((item) => item.dishId === WATER_DISH_ID);
+      items.push({ lineId: previousWater?.lineId || createId("line"), dishId: WATER_DISH_ID, name: "Bottiglietta d'acqua", category: "Bevanda", price: 0, qty: 1, served: previousWater?.served || false });
       const booking = {
         id: existing?.id || createId("meal"),
         serviceDate: date,
@@ -1827,10 +1884,7 @@
         userRole: roleLabel(currentUser.role),
         paid: existing?.paid || false,
         createdAt: existing?.createdAt || new Date().toISOString(),
-        items: lines.map((line) => {
-          const previous = existing?.items.find((item) => item.dishId === line.id);
-          return { lineId: previous?.lineId || createId("line"), dishId: line.id, name: line.name, category: line.category, price: Number(line.price), qty: Number(line.qty), served: previous?.served || false };
-        })
+        items
       };
       if (existingIndex >= 0) state.canteen.bookings.splice(existingIndex, 1, booking);
       else state.canteen.bookings.push(booking);
@@ -1998,7 +2052,12 @@
       if (action === "save-meal-booking") saveMealBooking();
       if (action === "cancel-meal-booking") {
         const booking = state.canteen.bookings.find((item) => item.id === button.dataset.bookingId);
-        if (booking && !booking.paid) { state.canteen.bookings = state.canteen.bookings.filter((item) => item.id !== booking.id); delete drafts[`${booking.userId}:${booking.serviceDate}`]; saveState(); showToast("Prenotazione cancellata"); render(); }
+        if (!booking || booking.paid) return;
+        const day = state.canteen.serviceDays.find((item) => item.date === booking.serviceDate);
+        if (isServiceDayLocked(day)) { showToast("Il termine per annullare questo giorno e scaduto"); return; }
+        state.canteen.bookings = state.canteen.bookings.filter((item) => item.id !== booking.id);
+        delete drafts[`${booking.userId}:${booking.serviceDate}`];
+        saveState(); showToast("Prenotazione cancellata"); render();
       }
       if (action === "operator-filter") { ui.operatorFilter = button.dataset.filter; render(); }
       if (action === "toggle-paid") {
